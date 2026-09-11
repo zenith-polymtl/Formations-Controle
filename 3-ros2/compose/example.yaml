@@ -1,0 +1,80 @@
+# Fichier Compose de la formation 3 : les deux mêmes services que la formation 2, bâtis à
+# partir de docker/dockerfile.example. Se lance depuis le dossier la formation 3, normalement
+# par le Makefile :
+#   make shell      (conteneur de travail)
+#   make mavros     (mavros, seulement dans la formation 3.3)
+# ou à la main :
+#   docker compose -f compose/example.yaml up -d example
+
+# Nom du projet Compose. Sans lui, Compose prend le nom du dossier qui contient ce
+# fichier (compose), le même qu'dans la formation 2 : les deux formations partageraient alors le
+# même nom d'image et le même conteneur, et l'une écraserait l'autre.
+name: b3
+
+services:
+  # Nom du service. C'est le nom qu'on passe aux commandes compose
+  # (docker compose up example, docker compose logs example) et le nom d'hôte
+  # du conteneur pour les autres services du même fichier.
+  example:
+
+    build:
+
+      # Dossier envoyé au démon Docker comme contexte de build : c'est la racine
+      # de tout ce que le Dockerfile peut copier. Relatif à CE fichier, donc la formation 3.
+      context: ..
+
+      # Chemin du Dockerfile, relatif au contexte.
+      dockerfile: docker/dockerfile.example
+
+    # Nom fixe de l'image, partagé avec le service mavros : bâtie une seule fois.
+    image: b3-example
+
+    # Nom fixe du conteneur au lieu du nom généré (b3-example-1). Rend les
+    # commandes prévisibles : docker exec -it b3-example bash
+    # Même convention que le vrai dépôt (aeac-$(C)).
+    container_name: b3-example
+
+    # Le conteneur partage le même réseau que l'hôte. Plus simple, moins sécure/privée (pas si grave dans Zenith)
+    network_mode: host
+
+    # Alloue un pseudo-terminal, équivalent du -t de docker run.
+    tty: true
+
+    # Garde l'entrée standard ouverte, équivalent du -i. Les deux ensemble = -it
+    stdin_open: true
+
+    volumes:
+      # Montage : le dossier de gauche (sur l'hôte, relatif à ce fichier) apparaît
+      # dans le conteneur au chemin de droite. Les modifications passent dans les
+      # deux sens et survivent à la suppression du conteneur.
+      - ../example_ws:/example_ws
+
+    # Dossier au démarrage du conteneur. Les chemins relatifs dans le CMD ou les scripts sont relatifs à ce dossier.
+    working_dir: /example_ws
+
+    # Remplace le CMD de l'image. Ici le conteneur ne fait rien et reste en vie,
+    # pour qu'on puisse entrer dedans quand on veut avec docker exec.
+    command: ["bash", "-lc", "while :; do sleep 86400; done"]
+
+    # Réseautique et DDS : important, mais couvert dans une autre formation.
+    environment:
+      - ROS_DOMAIN_ID=2
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+
+  # mavros, seul dans son conteneur, comme dans la formation 2 et comme compose/mavros.yml
+  # d'aeac-2026. Ne sert qu'à partir de la formation 3.3 : make mavros.
+  mavros:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile.example
+    image: b3-example
+    container_name: b3-mavros
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=2
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+    # FCU_URL vient de l'environnement du terminal qui lance compose (le Makefile
+    # la remplit), avec la simulation locale comme valeur par défaut.
+    command: ["bash", "-lc", "source /opt/ros/humble/setup.bash && ros2 launch mavros apm.launch fcu_url:=${FCU_URL:-tcp://127.0.0.1:5762} fcu_protocol:=v2.0"]

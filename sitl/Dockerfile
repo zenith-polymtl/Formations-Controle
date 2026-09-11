@@ -18,7 +18,7 @@ RUN ./waf configure --board sitl && ./waf copter
 
 # Démarre le simulateur avec MAVProxy, qui relaie MAVLink sur deux ports TCP
 # écoutés sur toutes les interfaces : 5762 pour mavros, 5763 pour Zenmav ou une
-# station sol. Mêmes ports que la simulation de Mission Planner, donc B1 à B3
+# station sol. Mêmes ports que la simulation de Mission Planner, donc les formations 1 à 3
 # ne changent pas. -L CMAC : le terrain de test par défaut d'ArduPilot (Australie).
 CMD ["Tools/autotest/sim_vehicle.py", "-v", "ArduCopter", "--no-rebuild", "-L", "CMAC", \
      "--mavproxy-args=--daemon", "--out=tcpin:0.0.0.0:5762", "--out=tcpin:0.0.0.0:5763"]
