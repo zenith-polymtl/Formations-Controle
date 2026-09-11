@@ -16,4 +16,3 @@ Commencer par [Formation 0](0-prerequis/0-prerequis-et-poste-de-travail.md), qui
 
 - [DEPANNAGE.md](DEPANNAGE.md) : les problèmes d'environnement (WSL, Docker, ports) qui reviennent dans tous les modules.
 - [ANNEXE-SITL-DOCKER.md](ANNEXE-SITL-DOCKER.md) : le simulateur sans Mission Planner (Mac, expérimental).
-- [plan_d'apprentissage.md](plan_d'apprentissage.md) : la carte complète du parcours, les formations 0 à 9, et ce qui vient après la formation 3.
