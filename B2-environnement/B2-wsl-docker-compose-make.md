@@ -478,10 +478,10 @@ Le SITL démarré par MP publie sa liaison MAVLink sur deux ports TCP locaux en 
 
 **2. Vérifier le réseau WSL.** En mode Mirrored (section 1.5), le conteneur joint la simulation à `127.0.0.1` et il n'y a rien à faire. Sous Windows 10, garder sous la main l'adresse de Windows vue de WSL (section 1.5) et l'utiliser partout où le texte dit `127.0.0.1`.
 
-**3. Bâtir l'image.** Depuis le dossier `B2 - Environnement` de la formation, qui doit être dans votre home WSL et non dans `/mnt/c`. Le nom du dossier contient des espaces, d'où les guillemets (adapter le chemin à l'endroit où vous avez cloné la formation) :
+**3. Bâtir l'image.** Depuis le dossier `B2-environnement` de la formation, qui doit être dans votre home WSL et non dans `/mnt/c`. Adapter le chemin à l'endroit où vous avez cloné la formation :
 
 ```bash
-cd ~/Control-Formations/"B2 - Environnement"
+cd ~/Control-Formations/B2-environnement
 mkdir -p example_ws
 docker compose -f compose/example.yaml build
 ```
@@ -530,7 +530,7 @@ Le lancement affiche beaucoup de lignes. Celle qui compte :
 
 Laisser rouler, ce terminal est occupé.
 
-**8. Lire le message de statut, dans un deuxième terminal.** Ouvrir un nouveau terminal WSL, retourner dans `B2 - Environnement`, et entrer dans le même conteneur :
+**8. Lire le message de statut, dans un deuxième terminal.** Ouvrir un nouveau terminal WSL, retourner dans `B2-environnement`, et entrer dans le même conteneur :
 
 ```bash
 docker compose -f compose/example.yaml exec example bash
@@ -596,7 +596,7 @@ cible: dépendances
 4. **Les préfixes.** `@` devant une commande empêche make de l'afficher avant de la rouler (utile pour les `echo`). `-` devant une commande fait continuer make même si elle échoue.
 5. **`.PHONY`** liste les cibles qui ne produisent pas de fichier portant leur nom. Sans ça, un fichier nommé `shell` dans le dossier ferait dire à make que la cible `shell` est déjà à jour, et il ne ferait rien.
 
-**Le Makefile de la formation.** Le fichier [Makefile](Makefile) est dans le dossier `B2 - Environnement`, commenté ligne par ligne : c'est lui qu'il faut lire, le texte n'en reprend que ce qui mérite une explication. Il fait en une commande tout le tour de la section 2.7 :
+**Le Makefile de la formation.** Le fichier [Makefile](Makefile) est dans le dossier `B2-environnement`, commenté ligne par ligne : c'est lui qu'il faut lire, le texte n'en reprend que ce qui mérite une explication. Il fait en une commande tout le tour de la section 2.7 :
 
 | Cible | Ce qu'elle fait |
 |---|---|
@@ -617,7 +617,7 @@ Trois choses à remarquer.
 
 Les commentaires `##` à côté des cibles ne servent à rien ici, mais le Makefile d'aeac-2026 a une cible `help` qui les lit pour afficher la liste des cibles documentées. La convention vaut la peine d'être gardée dès maintenant.
 
-**S'en servir.** Avec la simulation MP démarrée, depuis le dossier `B2 - Environnement` :
+**S'en servir.** Avec la simulation MP démarrée, depuis le dossier `B2-environnement` :
 
 ```bash
 make listen-status   # démarre le conteneur et mavros, affiche /mavros/state

@@ -258,4 +258,4 @@ Tout ce que B1 à B3 branchent ensemble (Mission Planner, la simulation, le cont
 - **Python, classes** : le tutoriel officiel en français, chapitre 9, <https://docs.python.org/fr/3/tutorial/classes.html>.
 - **Réseau** : un rappel visuel de ce qu'est une adresse IP et un port, <https://www.cloudflare.com/learning/network-layer/what-is-a-computer-port/>.
 
-Prochaine étape : [B1](../B1%20-%20Intro/B1.md), le premier drone.
+Prochaine étape : [B1](../B1-premier-drone/B1-mission-planner-et-zenmav.md), le premier drone.
