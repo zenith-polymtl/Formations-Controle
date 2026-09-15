@@ -481,7 +481,7 @@ Le SITL démarré par MP publie sa liaison MAVLink sur deux ports TCP locaux en 
 **3. Bâtir l'image.** Depuis le dossier `2-environnement` de la formation, qui doit être dans votre home WSL et non dans `/mnt/c`. Adapter le chemin à l'endroit où vous avez cloné la formation :
 
 ```bash
-cd ~/Control-Formations/2-environnement
+cd ~/Formations-Controle/2-environnement
 mkdir -p example_ws
 docker compose -f compose/example.yaml build
 ```

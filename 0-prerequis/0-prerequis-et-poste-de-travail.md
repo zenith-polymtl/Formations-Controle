@@ -16,7 +16,7 @@ Ces durées sont des estimations : si un module prend le double, ce n'est pas un
 
 **Où demander de l'aide.** Sur le Discord de Zenith, salon **Contrôle**, fil **Formations et Questions**. Poser la question avec le message d'erreur exact, copié du terminal : c'est ce qui permet de répondre vite. Aucune question n'est trop simple, c'est le but du fil.
 
-**Où vit la formation.** Sur GitHub, dépôt `zenith-polymtl/Control-Formations`, un dossier par module. Les documents se lisent directement sur GitHub ; le dépôt se clone dans la formation 2, quand WSL existe.
+**Où vit la formation.** Sur GitHub, dépôt `zenith-polymtl/Formations-Controle`, un dossier par module. Les documents se lisent directement sur GitHub ; le dépôt se clone dans la formation 2, quand WSL existe.
 
 **Ce qu'il faut.** Un ordinateur sous Windows 11 (Windows 10 passe, la formation 2 explique la différence), les droits d'administrateur dessus, une trentaine de Go libres et une bonne connexion Internet : les images Docker de la formation 2 pèsent plusieurs Go.
 
@@ -153,7 +153,7 @@ Au premier `push`, Git ouvre une fenêtre de connexion à GitHub dans le navigat
 `git clone` fait l'inverse : il télécharge un dépôt existant. C'est ce qu'on fera dans la formation 2 avec la formation :
 
 ```bash
-git clone https://github.com/zenith-polymtl/Control-Formations.git
+git clone https://github.com/zenith-polymtl/Formations-Controle.git
 ```
 
 Un fichier `.gitignore` à la racine du dépôt liste ce que Git ne doit jamais suivre : fichiers générés, dossiers de build, caches. Celui de la formation ignore les dossiers `build/`, `install/` et `log/` que ROS 2 produit dans la formation 3. Une ligne par motif, `*` pour « n'importe quoi ».

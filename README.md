@@ -1,4 +1,4 @@
-# Formations-Control
+# Formations-Controle
 
 Le parcours de formation de l'équipe contrôle de Zenith : du premier drone simulé jusqu'à une node ROS 2 qui pilote le drone, dans l'environnement exact du dépôt de compétition. Les documents se lisent directement ici, sur GitHub ; le dépôt se clone dans la formation 2.
 
