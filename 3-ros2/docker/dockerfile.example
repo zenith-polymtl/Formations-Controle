@@ -1,0 +1,64 @@
+# syntax=docker/dockerfile:1.6
+# Même base que l'image de la formation 2, plus les ajouts de la formation 3 (voir la formation 3.1, section 1).
+ARG ROS_DISTRO=humble
+#Image de base ros2, multiplateforme (amd64, arm64)
+FROM --platform=$TARGETPLATFORM ros:${ROS_DISTRO}-ros-base
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+#Configuration du shell
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+#Installation de mavros, python
+RUN apt-get update && apt-get install -y \
+    ros-${ROS_DISTRO}-mavros \
+    ros-${ROS_DISTRO}-mavros-extras \
+    ros-${ROS_DISTRO}-mavlink \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    geographiclib-tools \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+#Script qui installe les datasets (dépendances) pour mavros
+RUN /opt/ros/${ROS_DISTRO}/lib/mavros/install_geographiclib_datasets.sh
+
+#Ajout la formation 3 : nodes de démonstration talker/listener (C++ et Python). L'image
+#ros-base ne les contient pas, contrairement à une installation "desktop".
+#Placés après mavros pour que le cache de la formation 2 soit réutilisé autant que possible.
+RUN apt-get update && apt-get install -y \
+    ros-${ROS_DISTRO}-demo-nodes-cpp \
+    ros-${ROS_DISTRO}-demo-nodes-py \
+    && rm -rf /var/lib/apt/lists/*
+
+#librairies python
+RUN pip3 install --no-cache-dir \
+    numpy
+
+#Ajout la formation 3 : le workspace b3_tools_ws (nodes fournies de la formation 3.3), copié et bâti dans
+#l'image. Code fonctionnel qu'on ne modifie pas : on le copie au lieu de le monter
+#en volume (la formation 2, section 2.5). Seul src/ est copié, pas un éventuel build local.
+COPY b3_tools_ws/src /b3_tools_ws/src
+RUN cd /b3_tools_ws && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build
+
+#Dossier de référence du docker
+WORKDIR /example_ws
+
+
+#Autorisations et accès essentiels
+ARG UID=1000
+ARG GID=1000
+
+RUN groupadd -g ${GID} dev \
+    && useradd -m -u ${UID} -g ${GID} -s /bin/bash dev
+
+RUN usermod -aG dialout dev
+
+USER dev
+
+#Ajout la formation 3 : les shells interactifs sourcent ROS 2, puis b3_tools_ws, puis
+#example_ws (s'il est bâti), dans cet ordre. Le Makefile source déjà
+#l'environnement, mais la complétion par Tab des commandes ros2 et colcon ne
+#survit pas au "exec bash -i" : elle doit être rechargée ici.
+RUN echo 'source /opt/ros/humble/setup.bash' >> /home/dev/.bashrc \
+    && echo 'source /b3_tools_ws/install/setup.bash' >> /home/dev/.bashrc \
+    && echo 'if [ -f /example_ws/install/setup.bash ]; then source /example_ws/install/setup.bash; fi' >> /home/dev/.bashrc
