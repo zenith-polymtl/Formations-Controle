@@ -374,6 +374,9 @@ sudo chown -R $USER:$USER <dossier>
 
 **Le groupe dialout.** Sans lui, le conteneur ne peut pas ouvrir `/dev/ttyUSB0` et mavros ne parle pas au contrôleur de vol quand le drone est branché en USB.
 
+> [!NOTE]
+> **Le bloc « PIN TEMPORAIRE » avant l'installation de mavros.** Depuis septembre 2026, le dépôt apt de ROS n'a plus de paquet `ros-humble-mavros` installable : la version 2.15.1 a échoué à compiler sur la ferme de build ROS et l'ancienne a été retirée (voir [mavlink/mavros#2293](https://github.com/mavlink/mavros/issues/2293)). Le bloc remplace la source apt de ROS par un instantané daté du dépôt, où mavros 2.14.0 existe encore. Il n'a rien de pédagogique : il disparaîtra dès qu'une version corrigée sera publiée. Si le build échoue avec `Unable to locate package ros-humble-mavros`, c'est que ce bloc manque.
+
 ### 2.6 - Docker Compose
 
 Une commande `docker run` complète, avec ses volumes, ses ports, ses variables d'environnement et son utilisateur, fait dix lignes que personne ne veut retaper, voir le lancement du deuxième conteneur html un peu plus haut. Docker Compose met tout ça dans un fichier YAML versionné avec le code, et lance le tout avec une commande courte et structurée. C'est aussi ce qui permet de démarrer plusieurs conteneurs liés d'un seul coup, ce qui est souvent le cas d'un stack de vol (mavros, la mission, la caméra, le relais réseau). En bref, le lancement d'un compose est beaucoup plus propre.

@@ -25,6 +25,17 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # quand même dans la couche précédente et l'image garderait le poids.
 # ${ROS_DISTRO} fonctionne encore ici parce que l'image ROS définit elle-même
 # cette variable d'environnement.
+# PIN TEMPORAIRE (septembre 2026) : les binaires ros-humble-mavros 2.15.1 ont échoué
+# sur la ferme de build ROS et la 2.14.0 a été retirée de l'index. Sans ce pin,
+# apt répond "Unable to locate package ros-humble-mavros". On remplace la source apt
+# de ROS par le snapshot du 2026-08-07 (mavros 2.14.0, ensemble cohérent), signé par
+# une autre clé que packages.ros.org, d'où le téléchargement de la clé « ROS Snapshot builder ».
+# À retirer quand ros-humble-mavros >= 2.15.2 réapparaît. Suivi : github.com/mavlink/mavros/issues/2293
+RUN curl -sSL 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xAD19BAB3CBF125EA' \
+    | gpg --dearmor -o /usr/share/keyrings/ros-snapshots.gpg \
+ && printf 'Types: deb\nURIs: http://snapshots.ros.org/humble/2026-08-07/ubuntu\nSuites: jammy\nComponents: main\nSigned-By: /usr/share/keyrings/ros-snapshots.gpg\n' \
+    > /etc/apt/sources.list.d/ros2.sources
+
 RUN apt-get update && apt-get install -y \
     ros-${ROS_DISTRO}-mavros \
     ros-${ROS_DISTRO}-mavros-extras \
