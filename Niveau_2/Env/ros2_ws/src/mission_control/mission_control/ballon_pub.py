@@ -110,7 +110,7 @@ class Ballon_publisher(Node):
         self.initial_balloon_computed = build_soft_trajectory(np.array([0]))
 
 
-        self.get_logger().info(f'Initialized node, wainting for arrival')
+        self.get_logger().info(f'Initialized node, waiting for arrival')
         
 
     def callback(self, msg: String):
