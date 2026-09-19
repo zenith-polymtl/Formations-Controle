@@ -11,6 +11,12 @@ Le parcours de formation de l'équipe contrôle de Zenith : du premier drone sim
 | [Formation 3.2](3-ros2/3.2-launch-parametres-services.md) | ROS 2 : launch, paramètres, services | 1 h 30 |
 | [Formation 3.3](3-ros2/3.3-mavros.md) | mavros : topics et services, décollage depuis le terminal, messages à demander | 1 h 30 |
 | [Formation 3.4](3-ros2/3.4-piloter-au-clavier.md) | Projet : piloter le drone au clavier avec une node maison | 2 h 30 |
+| [Formation 9.1](9-tuning/9.1-lire-un-log.md) | Tuning : préparer un vol, lire un log, les trois outils, la fiche de santé | 1 h 30 |
+| [Formation 9.2](9-tuning/9.2-vibrations-et-filtres.md) | Tuning : vibrations, notch harmonique et passe-bas dans Filter Review | 1 h 30 |
+| [Formation 9.3](9-tuning/9.3-les-rates.md) | Tuning : les rates dans PID Review, step response, ratio P sur D, le yaw | 1 h 30 |
+| [Formation 9.4](9-tuning/9.4-chaine-complete-et-demarche.md) | Tuning : angle, vertical, horizontal, marge moteur, journal d'hypothèses, lire un vol raté | 2 h |
+
+La formation 9 est une branche parallèle : elle se fait après la formation 1 et ne demande ni Docker ni ROS 2. Elle suit un seul log réel, le premier vol du Crash Proof.
 
 Commencer par [Formation 0](0-prerequis/0-prerequis-et-poste-de-travail.md), qui explique le parcours, où demander de l'aide et quoi poster à la fin de chaque module.
 
