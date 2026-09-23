@@ -1,0 +1,48 @@
+# Image du conteneur vision sur la Jetson (compose/vision.yml). Ne se construit que sur la Jetson.
+# Ce qui diffère des autres : base JetPack (CUDA, TensorRT) au lieu de l'image ROS ; ROS Humble
+# installé à la main ; PyTorch et ultralytics pour YOLO. Reprise de la branche de compétition 2026.
+# numpy est épinglé à 1.26.4 (ultralytics et torch Jetson ne supportent pas numpy 2) ; c'est le seul
+# endroit où numpy vient de pip. Le pin est posé une fois, avant torch, et torch/ultralytics sont
+# installés sans dépendances pour qu'ils ne le remplacent pas.
+FROM nvcr.io/nvidia/l4t-jetpack:r36.4.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ROS_DISTRO=humble
+ENV PIP_NO_CACHE_DIR=1
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+# Outils de base et locale
+RUN apt-get update && apt-get install -y \
+    locales curl gnupg lsb-release software-properties-common \
+    python3-pip python3-dev libopenblas-dev \
+    && locale-gen en_US en_US.UTF-8 \
+    && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
+    && add-apt-repository universe \
+    && rm -rf /var/lib/apt/lists/*
+
+# Dépôt apt ROS 2
+RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F'"' '{print $4}') \
+    && curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb" \
+    && dpkg -i /tmp/ros2-apt-source.deb && rm /tmp/ros2-apt-source.deb
+
+# ROS 2 Humble et ce dont la vision a besoin
+RUN apt-get update && apt-get install -y \
+    ros-humble-ros-base \
+    ros-humble-rmw-cyclonedds-cpp \
+    ros-humble-cv-bridge \
+    ros-humble-message-filters \
+    ros-humble-zed-msgs \
+    python3-opencv \
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python : numpy épinglé avant torch, torch Jetson depuis l'index NVIDIA, ultralytics sans dépendances
+RUN python3 -m pip install --upgrade pip setuptools wheel \
+    && python3 -m pip install "numpy==1.26.4" \
+    && python3 -m pip install torch==2.8.0 torchvision==0.23.0 --index-url https://pypi.jetson-ai-lab.io/jp6/cu126 \
+    && python3 -m pip install --no-deps ultralytics \
+    && python3 -m pip install matplotlib pyyaml tqdm scipy requests pandas psutil pillow seaborn ultralytics-thop \
+    && python3 -c "import numpy; assert numpy.__version__ == '1.26.4', numpy.__version__"
+
+WORKDIR /aeac

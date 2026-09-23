@@ -1,0 +1,53 @@
+# Image du portable GCS et du poste de développement (compose/gcs.yml, dev.yml, sim.yml).
+# Ce qui diffère de dockerfile.drone : rviz2, rqt et X11 en plus, pour voir ce qui se passe.
+# Tout le reste est identique à dockerfile.drone, volontairement : une mission se simule ici avec la même base.
+# Même version de numpy que dockerfile.drone : celle d'Ubuntu 22.04 (python3-numpy, 1.21).
+ARG ROS_DISTRO=humble
+FROM ros:${ROS_DISTRO}-ros-base
+
+ARG ROS_DISTRO
+ENV DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Outils de build
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
+
+# mavros (pour les messages et services mavros_msgs dans les nœuds) et ses données géographiques
+RUN apt-get update && apt-get install -y \
+    ros-${ROS_DISTRO}-mavros-extras \
+    ros-${ROS_DISTRO}-mavlink \
+    geographiclib-tools \
+    && rm -rf /var/lib/apt/lists/* \
+    && /opt/ros/${ROS_DISTRO}/lib/mavros/install_geographiclib_datasets.sh
+
+# DDS local (Cyclone) ; Zenoh fait le pont entre machines dans son propre conteneur
+RUN apt-get update && apt-get install -y \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    ros-${ROS_DISTRO}-tf-transformations \
+    ros-${ROS_DISTRO}-zed-msgs \
+    iputils-ping \
+    iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python : numpy et geopy viennent d'apt, pas de pip, pour rester alignés entre images
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    python3-numpy \
+    python3-geopy \
+    && rm -rf /var/lib/apt/lists/*
+
+# Ce que le drone n'a pas : visualisation
+RUN apt-get update && apt-get install -y \
+    ros-${ROS_DISTRO}-rviz2 \
+    ros-${ROS_DISTRO}-rqt \
+    ros-${ROS_DISTRO}-rqt-common-plugins \
+    ros-${ROS_DISTRO}-image-transport \
+    ros-${ROS_DISTRO}-compressed-image-transport \
+    x11-apps \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /aeac

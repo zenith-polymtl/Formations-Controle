@@ -1,0 +1,27 @@
+# La mission C sur la Jetson. La commande est le launch de la mission : c'est ce que
+# `make drone C=<mission>` lance en avant-plan et ce que systemd (mission.service) lance au boot.
+# Pour déboguer pendant que ça tourne : make shell IMG=drone
+services:
+  drone:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile.drone
+    image: aeac/drone
+    container_name: aeac-drone
+    network_mode: host
+    ipc: host
+    privileged: true
+    tty: true
+    stdin_open: true
+    volumes:
+      - ..:/aeac
+      - /dev:/dev
+    working_dir: /aeac/workspaces/${C:-gcs}_ws
+    environment:
+      - ROS_DOMAIN_ID=2
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+      - ROS_LOCALHOST_ONLY=1
+    command: >
+      bash -lc "source /opt/ros/humble/setup.bash && source install/setup.bash &&
+        ros2 daemon start && ros2 launch ${C:-gcs}_bringup mission.launch.py"

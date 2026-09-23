@@ -1,0 +1,23 @@
+# Conteneur de développement (poste WSL). On y entre avec `make dev`.
+# Tout le dépôt est monté dans /aeac : on peut construire et lancer n'importe quel workspace.
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile.gcs
+    image: aeac/gcs
+    container_name: aeac-dev
+    network_mode: host
+    ipc: host
+    privileged: true
+    tty: true
+    stdin_open: true
+    volumes:
+      - ..:/aeac
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    working_dir: /aeac/workspaces/${C:-gcs}_ws
+    command: ["bash", "-lc", "while :; do sleep 86400; done"]
+    environment:
+      - ROS_DOMAIN_ID=3
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - DISPLAY=${DISPLAY}

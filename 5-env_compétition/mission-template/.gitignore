@@ -1,0 +1,22 @@
+# Artefacts de build ROS (dans chaque workspace)
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+
+# Modèles de vision et enregistrements : jamais dans git (make models, make bag)
+models/
+bags/
+*.onnx
+*.pt
+*.engine
+*.tlog
+*.tlog.raw
+*.bin
+saved_images*/
+
+# Local
+.env

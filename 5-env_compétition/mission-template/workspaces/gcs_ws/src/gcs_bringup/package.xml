@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>gcs_bringup</name>
+  <version>1.0.0</version>
+  <description>Launch files du portable GCS : base.launch.py (heartbeat), puis un launch par mission.</description>
+  <maintainer email="controle@zenith-polymtl.ca">Zenith, équipe contrôle</maintainer>
+  <license>Apache-2.0</license>
+
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>tools</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

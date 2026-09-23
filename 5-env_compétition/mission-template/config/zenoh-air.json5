@@ -1,0 +1,23 @@
+// Pont Zenoh côté drone (compose/zenoh-air.yml). Mode routeur : le sol se connecte à lui.
+// Seuls les topics listés dans allow traversent la radio. Le nom du topic dit où il voyage :
+// /aeac/external/... traverse, /aeac/internal/... reste sur le drone.
+{
+  plugins: {
+    ros2dds: {
+      domain: 2,
+      ros_localhost_only: true,
+      reliable_routes_blocking: false,
+      allow: {
+        publishers: ["/tf", "/tf_static", "/aeac/external.*"],
+        subscribers: ["/tf", "/tf_static", "/aeac/external.*"]
+      }
+    }
+  },
+  mode: "router",
+  listen: { endpoints: ["tcp/0.0.0.0:7447"] },
+  // Pas de découverte automatique : deux drones sur le même réseau ne doivent pas se trouver par surprise.
+  scouting: {
+    multicast: { enabled: false },
+    gossip: { enabled: false }
+  }
+}

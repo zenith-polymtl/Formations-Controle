@@ -1,0 +1,29 @@
+# Conteneur vision sur la Jetson (image GPU JetPack, séparée de l'image drone parce que
+# l'image ROS standard et l'image JetPack ne cohabitent pas). Lancé par `make vision` à la main
+# ou par vision.service au boot. Le workspace est vision_ws.
+services:
+  vision:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile.vision
+    image: aeac/vision
+    container_name: aeac-vision
+    network_mode: host
+    ipc: host
+    runtime: nvidia
+    privileged: true
+    tty: true
+    stdin_open: true
+    volumes:
+      - ..:/aeac
+    working_dir: /aeac/workspaces/vision_ws
+    environment:
+      - ROS_DOMAIN_ID=2
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+      - ROS_LOCALHOST_ONLY=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    command: >
+      bash -lc "source /opt/ros/humble/setup.bash && source install/setup.bash &&
+        ros2 daemon start && ros2 launch vision_bringup vision.launch.py"

@@ -1,0 +1,20 @@
+# La mission au boot. Même chose que `make drone C=<mission>`, emballé par systemd.
+# La mission active est lue dans /etc/aeac/mission (écrit par `make deploy C=<mission>`).
+# __REPO__ est remplacé par le chemin du dépôt par `make deploy`.
+[Unit]
+Description=Mission (docker compose), lit /etc/aeac/mission
+After=docker.service network-online.target lo-multicast.service mavros.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=__REPO__
+ExecStart=/bin/bash -lc 'C=$(cat /etc/aeac/mission) docker compose -f compose/drone.yml up'
+ExecStop=/usr/bin/docker compose -f compose/drone.yml down
+Restart=always
+RestartSec=2
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

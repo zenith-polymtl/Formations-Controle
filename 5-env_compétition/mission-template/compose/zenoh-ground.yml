@@ -1,0 +1,15 @@
+# Pont Zenoh côté sol, vers le drone choisi : `make gcs C=<mission> DRONE=<drone>`.
+# La config complète du drone visé est config/drones/<DRONE>.json5 (adresses SIYI et Tailscale).
+services:
+  zenoh-ground:
+    image: eclipse/zenoh-bridge-ros2dds:latest
+    container_name: aeac-zenoh-ground
+    network_mode: host
+    volumes:
+      - ../config/drones/${DRONE:-hexa}.json5:/config.json5:ro
+    command: ["-c", "/config.json5"]
+    environment:
+      - ROS_DOMAIN_ID=3
+      - ROS_DISTRO=humble
+      - ROS_LOCALHOST_ONLY=1
+      - RUST_LOG=info

@@ -1,0 +1,5 @@
+# Paramètres mavros communs (chargés par compose/mavros.yml).
+# Ce qui n'est pas ici est la valeur par défaut d'apm.launch.
+/mavros/local_position:
+  ros__parameters:
+    tf.send: true

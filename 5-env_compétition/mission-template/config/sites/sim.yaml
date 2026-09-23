@@ -1,0 +1,15 @@
+# Site « sim » : la position de départ par défaut du SITL ArduPilot (Canberra).
+# Un fichier par terrain de vol (cimetiere.yaml, competition.yaml) avec les mêmes clés.
+# Le launch prend site:=<nom> et passe ces valeurs aux nœuds par-dessus config/<mission>.yaml.
+site:
+  name: sim
+  home:
+    lat: -35.363262
+    lon: 149.165237
+    alt: 584.0        # mètres AMSL
+  scene:
+    # Points de la mission en lat/lon. Les clés sont à définir par la mission.
+    target:
+      lat: -35.362800
+      lon: 149.165700
+  altitude_agl: 10.0  # altitude de travail au-dessus du sol, mètres

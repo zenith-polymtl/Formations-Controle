@@ -1,0 +1,32 @@
+# Caméra ZED sur la Jetson. `make zed` à la main, zed.service au boot.
+# L'image est celle du wrapper ZED construite à part (packages/zed-ros2-wrapper, fork zenith),
+# pas une image de ce dépôt. Le fichier de paramètres de la caméra est dans config/.
+services:
+  zed:
+    image: zed_ros2_l4t_36.4.0_sdk_5.1.0:latest
+    container_name: aeac-zed
+    runtime: nvidia
+    network_mode: host
+    ipc: host
+    pid: host
+    privileged: true
+    shm_size: "2gb"
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    volumes:
+      - /dev:/dev
+      - /usr/local/zed/resources/:/usr/local/zed/resources/
+      - /usr/local/zed/settings/:/usr/local/zed/settings/
+      - ../config:/root/ros2_ws/config
+      - ../models:/root/ros2_ws/models
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - ROS_DOMAIN_ID=2
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_LOCALHOST_ONLY=1
+    command: >
+      bash -lc "source /root/ros2_ws/install/setup.bash &&
+        ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
+        ros_params_override_path:=/root/ros2_ws/config/zed.yaml publish_tf:=false publish_map_tf:=false"

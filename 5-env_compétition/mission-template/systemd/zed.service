@@ -1,0 +1,20 @@
+# Caméra ZED au boot. Même chose que `make zed`, emballé par systemd.
+# __REPO__ est remplacé par le chemin du dépôt par `make deploy`.
+[Unit]
+Description=Caméra ZED (docker compose), attend la caméra
+After=docker.service network-online.target lo-multicast.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=__REPO__
+ExecStartPre=/bin/bash -c 'until lsusb | grep -qi stereolabs; do sleep 1; done'
+ExecStart=/usr/bin/docker compose -f compose/zed.yml up
+ExecStop=/usr/bin/docker compose -f compose/zed.yml down
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

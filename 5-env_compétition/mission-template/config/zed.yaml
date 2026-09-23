@@ -1,0 +1,124 @@
+# config/zed2i_image_od_only.yaml  
+/**:  
+    ros__parameters:  
+        # General settings  
+        general:  
+            camera_name: 'zed2i'
+            grab_resolution: '720'  # 720 is Good balance for Jetson, or 'VGA' for maximum performance  
+            pub_frame_rate: 15.0    # Previously was 10.0
+            pub_resolution: 'CUSTOM'  
+            pub_downscale_factor: 2.0  
+            gpu_id: -1  
+            enable_image_validity_check: 1  
+            async_image_retrieval: false  
+            camera_timeout_sec: 5  
+            camera_max_reconnect: 5  
+            camera_flip: false  
+            self_calib: true
+          
+        # Video settings - outdoor optimized  
+        video:
+            brightness: 4
+            contrast: 4
+            saturation: 4
+            sharpness: 4
+            gamma: 8
+            auto_exposure_gain: true
+            auto_whitebalance: true
+            
+            publish_left_right: true          
+        # Sensor settings  
+        sensors:  
+            sensors_pub_rate: 10.0  
+            publish_imu_tf: false  
+            sensors_image_sync: true  
+          
+        # Depth settings - minimal for object detection  
+        depth:  
+            depth_mode: 'NONE'  # NEURAL_LIGHT is required for object detection  
+            point_cloud_freq: 5.0   
+            depth_confidence: 80  
+            depth_texture_conf: 80  
+            remove_saturated_areas: true  
+            openni_depth_mode: true
+          
+        # POSITIONAL TRACKING DISABLED  
+        pos_tracking:  
+            pos_tracking_enabled: false
+            publish_tf: false
+            publish_map_tf: false          
+        # MAPPING DISABLED  
+        mapping:  
+            mapping_enabled: false  # DISABLED - no SLAM  
+          
+        # GNSS FUSION DISABLED  
+        gnss_fusion:  
+            gnss_fusion_enabled: false  # DISABLED - no SLAM  
+          
+        # Object Detection - CUSTOM ONNX MODEL  
+        object_detection:  
+            od_enabled: false
+            enable_tracking: false
+            allow_reduced_precision_inference: false
+
+            detection_model: 'CUSTOM_YOLOLIKE_BOX_OBJECTS'
+            custom_onnx_file: '/root/ros2_ws/models/yolov8s_square_640.onnx'
+            #custom_label_yaml: '/root/ros2_ws/models/object_classes.yaml'
+
+            custom_class_count:   8
+            onnx_input_size:      640
+            confidence_threshold: 50.0 
+            max_range:            10.0
+            prediction_timeout:   0.5 
+            filtering_mode:      'NMS3D'
+
+            class_000:
+               label: 'window'
+               model_class_id: 0
+               enabled: true
+            
+            class_001:
+               label: 'door'
+               model_class_id: 1
+               enabled: true
+            
+            class_002:
+               label: 'red circle'
+               model_class_id: 2
+               enabled: true
+            
+            class_003:
+               label: 'green circle'
+               model_class_id: 3
+               enabled: true
+            
+            class_004:
+               label: 'blue circle'
+               model_class_id: 4
+               enabled: true
+            
+            class_005:
+               label: 'yellow circle'
+               model_class_id: 5
+               enabled: true
+            
+            class_006:
+               label: 'white circle'
+               model_class_id: 6
+               enabled: true
+            
+            class_007:
+               label: 'black circle'
+               model_class_id: 7
+               enabled: true
+
+        # Jetson optimization  
+        advanced:  
+            thread_sched_policy: 'SCHED_FIFO'  
+            thread_grab_priority: 60  
+            thread_sensor_priority: 80  
+            thread_pointcloud_priority: 40  
+          
+        debug:  
+            debug_object_detection: true  
+            debug_advanced: false

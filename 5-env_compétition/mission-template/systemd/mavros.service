@@ -1,0 +1,21 @@
+# mavros au boot. Même chose que `make mavros`, emballé par systemd.
+# __REPO__ est remplacé par le chemin du dépôt par `make deploy`.
+[Unit]
+Description=mavros (docker compose), attend le port série
+After=docker.service network-online.target lo-multicast.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=__REPO__
+# Attend que le port série du Pixhawk existe (JetPack 6 : ttyTHS1 ; JetPack 5 : ttyTHS0)
+ExecStartPre=/bin/bash -lc 'until [ -c /dev/ttyTHS1 ]; do sleep 1; done'
+ExecStart=/usr/bin/docker compose -f compose/mavros.yml up
+ExecStop=/usr/bin/docker compose -f compose/mavros.yml down
+Restart=always
+RestartSec=2
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

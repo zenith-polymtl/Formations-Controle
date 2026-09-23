@@ -1,0 +1,27 @@
+# Les nœuds sol de la mission C sur le portable, en vol : `make gcs C=<mission> DRONE=<drone>`
+# (le Makefile ajoute zenoh-ground.yml). Le workspace est gcs_ws ; le launch sol d'une mission
+# est gcs_bringup/launch/<mission>.launch.py. `C=base` lance seulement le heartbeat.
+services:
+  gcs:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile.gcs
+    image: aeac/gcs
+    container_name: aeac-gcs
+    network_mode: host
+    ipc: host
+    tty: true
+    stdin_open: true
+    volumes:
+      - ..:/aeac
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    working_dir: /aeac/workspaces/gcs_ws
+    environment:
+      - ROS_DOMAIN_ID=3
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+      - ROS_LOCALHOST_ONLY=1
+      - DISPLAY=${DISPLAY}
+    command: >
+      bash -lc "source /opt/ros/humble/setup.bash && source install/setup.bash &&
+        ros2 daemon start && ros2 launch gcs_bringup ${C:-base}.launch.py"

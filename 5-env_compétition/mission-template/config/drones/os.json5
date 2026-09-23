@@ -1,0 +1,31 @@
+// Pont Zenoh côté sol vers le drone OS (compose/zenoh-ground.yml, make gcs DRONE=os).
+// Un fichier complet par drone ; seules les deux lignes endpoints diffèrent d'un fichier à l'autre.
+// Deux adresses : la SIYI (lien principal) et Tailscale (secours LTE). Le pont essaie les deux.
+{
+  plugins: {
+    ros2dds: {
+      domain: 3,
+      ros_localhost_only: true,
+      reliable_routes_blocking: false,
+      queries_timeout: { default: 2.0 },
+      allow: {
+        publishers: ["/tf", "/tf_static", "/aeac/external.*"],
+        subscribers: ["/tf", "/tf_static", "/aeac/external.*"]
+      }
+    }
+  },
+  mode: "client",
+  connect: {
+    timeout_ms: -1,
+    exit_on_failure: false,
+    retry: { period_init_ms: 1000, period_max_ms: 4000, period_increase_factor: 2.0 },
+    endpoints: [
+      "tcp/192.168.144.31:7447",   // SIYI HM30
+      "tcp/100.64.95.10:7447"      // Tailscale
+    ]
+  },
+  scouting: {
+    multicast: { enabled: false },
+    gossip: { enabled: false }
+  }
+}

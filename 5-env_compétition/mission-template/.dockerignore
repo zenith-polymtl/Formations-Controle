@@ -1,0 +1,9 @@
+# Ce que docker build ne doit pas envoyer au démon (sinon chaque build copie tout le dépôt)
+.git
+**/build
+**/install
+**/log
+models
+bags
+*.png
+*.jpg

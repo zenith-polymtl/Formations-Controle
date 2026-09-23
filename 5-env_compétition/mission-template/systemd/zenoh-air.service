@@ -1,0 +1,19 @@
+# Pont Zenoh côté drone au boot. Même chose que `make zenoh-air`, emballé par systemd.
+# __REPO__ est remplacé par le chemin du dépôt par `make deploy`.
+[Unit]
+Description=Pont Zenoh air (docker compose)
+After=docker.service network-online.target lo-multicast.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=__REPO__
+ExecStart=/usr/bin/docker compose -f compose/zenoh-air.yml up
+ExecStop=/usr/bin/docker compose -f compose/zenoh-air.yml down
+Restart=always
+RestartSec=2
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

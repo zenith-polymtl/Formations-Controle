@@ -1,0 +1,15 @@
+# Pont Zenoh côté drone. `make zenoh-air` à la main, zenoh-air.service au boot.
+# Seuls les topics /aeac/external/* et /tf traversent : voir config/zenoh-air.json5.
+services:
+  zenoh-air:
+    image: eclipse/zenoh-bridge-ros2dds:latest
+    container_name: aeac-zenoh-air
+    network_mode: host
+    volumes:
+      - ../config/zenoh-air.json5:/config.json5:ro
+    command: ["-c", "/config.json5"]
+    environment:
+      - ROS_DOMAIN_ID=2
+      - ROS_DISTRO=humble
+      - ROS_LOCALHOST_ONLY=1
+      - RUST_LOG=info

@@ -1,0 +1,19 @@
+# Image du service mavros (compose/mavros.yml sur la Jetson, mavros-sim dans compose/sim.yml).
+# Ce qui diffère des autres : rien de plus que mavros. Pas de colcon, pas de Python maison :
+# ce conteneur ne construit rien, il fait tourner mavros et c'est tout.
+ARG ROS_DISTRO=humble
+FROM ros:${ROS_DISTRO}-ros-base
+
+ARG ROS_DISTRO
+ENV DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN apt-get update && apt-get install -y \
+    ros-${ROS_DISTRO}-mavros-extras \
+    ros-${ROS_DISTRO}-mavlink \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    geographiclib-tools \
+    && rm -rf /var/lib/apt/lists/* \
+    && /opt/ros/${ROS_DISTRO}/lib/mavros/install_geographiclib_datasets.sh
+
+WORKDIR /aeac
