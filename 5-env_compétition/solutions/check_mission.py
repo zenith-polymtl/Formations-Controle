@@ -1,10 +1,15 @@
-"""Test hors ROS de haversine_m, next_state et du noeud (stubs). Hors du depot : scratchpad."""
+"""Test hors ROS de la demo (haversine_m, next_state, transitions du noeud) avec des stubs rclpy.
+
+Pour les leads : `python 5-env_compétition/solutions/check_mission.py` apres toute retouche de
+demo_ws. Ne pas copier dans le depot de mission (pas de tests la-bas).
+"""
 import importlib.util
+import os
 import sys
 import types
 
-MISSION = (r'C:\Users\colin\Zenith\Control-Formations\5-env_compétition'
-           r'\demo_ws\src\demo_mission\demo_mission\mission.py')
+MISSION = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'demo_ws', 'src',
+                       'demo_mission', 'demo_mission', 'mission.py')
 
 
 def stub(name, **attrs):
