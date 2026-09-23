@@ -1,0 +1,18 @@
+La ligne à ajouter dans topics.py. tools est un sous-module, donc son propre dépôt : ce diff
+s'applique depuis la racine du clone de tools (packages/tools/ dans le dépôt de mission), avec
+git apply topics.py.diff, et la PR se fait dans le dépôt tools avant de bouger le pointeur du
+dépôt de mission (make bump PKG=tools). La ligne va avec les autres externes : le préfixe
+EXTERNAL est ce qui fait traverser la radio au résumé.
+
+diff --git a/tools/topics.py b/tools/topics.py
+index 356c279..7411ee8 100644
+--- a/tools/topics.py
++++ b/tools/topics.py
+@@ -11,6 +11,7 @@ INTERNAL = '/aeac/internal'   # reste sur la machine
+ GCS_HEARTBEAT = f'{EXTERNAL}/gcs/heartbeat'
+ DRONE_HEALTH = f'{EXTERNAL}/drone/health'
+ DEMO_STATE = f'{EXTERNAL}/demo/state'
++DEMO_SUMMARY = f'{EXTERNAL}/demo/summary'
+ 
+ # --- Internes : drone seulement ---
+ LINK_OK = f'{INTERNAL}/link_ok'

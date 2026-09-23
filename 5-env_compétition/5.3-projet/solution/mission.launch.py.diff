@@ -1,0 +1,47 @@
+Le moniteur ajouté au launch de demo_bringup. S'applique depuis la racine du clone du dépôt de
+mission, où demo_ws a été copié dans workspaces/, avec git apply mission.launch.py.diff. La
+section mission_monitor: de config/demo.yaml doit être en place (voir demo.yaml.diff), sinon le
+nœud démarre quand même, avec les défauts écrits dans son code.
+
+Deux choses à remarquer. Le moniteur est un second Node dans le même launch : il démarre et
+s'arrête avec la mission, personne n'a à penser à le lancer. Et les deux nœuds reçoivent le
+même fichier de paramètres, passé tel quel, parce qu'un fichier de paramètres ROS 2 est indexé
+par nom de nœud (voir 5.3-projet/README.md, « Les fichiers à toucher »). Le moniteur ne reçoit
+pas les paramètres du site : il ne vole pas, il regarde.
+
+diff --git a/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py b/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
+index 9493bd1..70fe558 100644
+--- a/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
++++ b/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
+@@ -1,7 +1,9 @@
+-"""Launch de la mission démo : un seul nœud, deux fichiers de configuration du dépôt.
++"""Launch de la mission démo : le nœud de mission, le moniteur du projet 5.3, et deux
++fichiers de configuration du dépôt.
+ 
+-`config/demo.yaml` est déjà au format paramètres ROS 2 (`demo_mission: ros__parameters:`) et se
+-passe tel quel au nœud. `config/sites/<site>.yaml` ne l'est pas, et on ne change pas son format
++`config/demo.yaml` est déjà au format paramètres ROS 2 : il est indexé par nom de nœud, et il
++porte une section par nœud (`demo_mission:` et `mission_monitor:`), donc il se passe tel quel
++aux deux. `config/sites/<site>.yaml` ne l'est pas, et on ne change pas son format
+ pour ne pas toucher au template : ce launch le lit lui-même avec le module `yaml`, dans une
+ `OpaqueFunction` parce que le nom du site n'est connu qu'au moment du lancement, et il aplatit
+ les clés utiles en paramètres du nœud.
+@@ -51,6 +53,18 @@ def launch_setup(context, *args, **kwargs):
+                 {'sim': ParameterValue(LaunchConfiguration('sim'), value_type=bool)},
+             ],
+         ),
++        # Le moniteur du projet 5.3 : il ne fait que regarder, il part et s'arrête avec la
++        # mission. Il reçoit le même config/demo.yaml, où il lit sa propre section
++        # `mission_monitor:` ; les paramètres du site ne le concernent pas.
++        Node(
++            package='demo_monitor',
++            executable='monitor',
++            name='mission_monitor',
++            output='screen',
++            parameters=[
++                f'{CONFIG_DIR}/demo.yaml',
++            ],
++        ),
+     ]
+ 
+ 

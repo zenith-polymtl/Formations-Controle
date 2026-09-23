@@ -1,0 +1,13 @@
+diff --git a/compose/sim.yml b/compose/sim.yml
+index ce2b773..6d40926 100644
+--- a/compose/sim.yml
++++ b/compose/sim.yml
+@@ -33,7 +33,7 @@ services:
+       - mavros-sim
+     volumes:
+       - ..:/aeac
+-    working_dir: /aeac/workspaces/${C:-gcs}_ws
++    working_dir: /aeac/workspaces/${C:-gcs}_wss
+     environment:
+       - ROS_DOMAIN_ID=3
+       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp

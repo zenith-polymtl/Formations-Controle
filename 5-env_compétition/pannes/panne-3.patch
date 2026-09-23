@@ -1,0 +1,13 @@
+diff --git a/config/demo.yaml b/config/demo.yaml
+index 7d31299..bca3830 100644
+--- a/config/demo.yaml
++++ b/config/demo.yaml
+@@ -4,7 +4,7 @@ demo_mission:
+   ros__parameters:
+     rc:
+       # index du GO dans RCIn.channels, donc le canal 8 de la manette (touche w du rc_simulator)
+-      go_channel: 7
++      go_channel: 12
+       # PWM à partir duquel l'interrupteur compte comme haut (le rc_simulator envoie 1900)
+       go_pwm_min: 1700
+     arrival_radius_m: 3.0    # rayon d'arrivée sur le waypoint et sur le retour, mètres

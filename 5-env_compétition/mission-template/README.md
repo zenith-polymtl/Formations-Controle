@@ -34,13 +34,13 @@ cp -r mission-template/ <nouveau-dépôt> && cd <nouveau-dépôt>
 git init
 for p in custom_interfaces tools nav_stack vision; do git submodule add https://github.com/zenith-polymtl/$p packages/$p; done
 git submodule add -b zenith https://github.com/zenith-polymtl/zed-ros2-wrapper packages/zed-ros2-wrapper
-make link C=gcs PKG=custom_interfaces && make link C=gcs PKG=tools
+make link C=gcs PKG=custom_interfaces && make link C=gcs PKG=tools && make link C=gcs PKG=sim_mocks
 make link C=vision PKG=vision && make link C=vision PKG=custom_interfaces
 make init && make check
 git add -A && git commit -m "init from mission-template"
 ```
 
-Puis, pour chaque mission : `workspaces/<mission>_ws/src/<mission>_bringup/` (avec `launch/mission.launch.py`), `config/<mission>.yaml`, `make link` des paquets partagés, `gcs_ws/src/gcs_bringup/launch/<mission>.launch.py` pour le sol.
+Puis, pour chaque mission : `workspaces/<mission>_ws/src/<mission>_bringup/` (avec `launch/mission.launch.py`), `config/<mission>.yaml`, `make link` des paquets partagés (dont `sim_mocks`, pour que `make shell IMG=sim` trouve les mocks), `gcs_ws/src/gcs_bringup/launch/<mission>.launch.py` pour le sol.
 
 ## Sur le drone
 

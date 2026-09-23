@@ -42,7 +42,7 @@ Une mission, c'est trois choses :
 2. `config/<mission>.yaml` : tout ce qui se règle (gains, PWM, interrupteurs, seuils). Le launch le charge et le passe aux nœuds. Rien de tout ça dans le code.
 3. `gcs_ws/src/gcs_bringup/launch/<mission>.launch.py` : ce que le portable lance pour cette mission.
 
-`make build C=<mission>` construit ce workspace et rien d'autre. `make sim C=<mission>` le simule. `make drone C=<mission>` le lance sur la Jetson. Le launch est le même en simulation et en vol : `sim:=true` passe un paramètre `sim` aux nœuds qui touchent au matériel, et ils entourent leur seul appel matériel d'un `if not self.sim`. `site:=<nom>` choisit `config/sites/<nom>.yaml` (coordonnées du terrain).
+`make build C=<mission>` construit ce workspace et rien d'autre. `make sim C=<mission>` le simule. `make drone C=<mission>` le lance sur la Jetson. Le launch est le même en simulation et en vol : `sim:=true` passe un paramètre `sim` aux nœuds qui touchent au matériel, et ils entourent leur seul appel matériel d'un `if not self.sim`. `site:=<nom>` choisit `config/sites/<nom>.yaml` (coordonnées du terrain) ; en simulation, `make sim C=<mission> SITE=<nom>`.
 
 ## Règles de code
 

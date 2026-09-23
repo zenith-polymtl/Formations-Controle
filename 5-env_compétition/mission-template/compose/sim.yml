@@ -1,7 +1,7 @@
 # Simulation de la mission C sur le poste WSL : `make sim C=<mission>`.
 # 1. Le SITL tourne dans Mission Planner sous Windows (formation 1). mavros s'y connecte en TCP.
 # 2. Le launch de la mission est le même qu'en vol, avec sim:=true (les nœuds qui touchent au
-#    matériel lisent ce paramètre) et site:=sim (config/sites/sim.yaml).
+#    matériel lisent ce paramètre) et site:=$SITE (config/sites/<site>.yaml, sim par défaut : make sim C=demo SITE=polytechnique).
 # 3. Les mocks se lancent à la main dans un second terminal : make shell IMG=sim, puis
 #    ros2 run sim_mocks rc_simulator (il lit le clavier, donc en avant-plan).
 services:
@@ -39,4 +39,4 @@ services:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
     command: >
       bash -lc "source /opt/ros/humble/setup.bash && source install/setup.bash &&
-        ros2 launch ${C:-gcs}_bringup mission.launch.py sim:=true site:=sim"
+        ros2 launch ${C:-gcs}_bringup mission.launch.py sim:=true site:=${SITE:-sim}"

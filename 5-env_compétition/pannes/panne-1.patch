@@ -1,0 +1,13 @@
+diff --git a/compose/sim.yml b/compose/sim.yml
+index ce2b773..76084c0 100644
+--- a/compose/sim.yml
++++ b/compose/sim.yml
+@@ -13,7 +13,7 @@ services:
+     container_name: aeac-mavros-sim
+     network_mode: host
+     environment:
+-      - ROS_DOMAIN_ID=3
++      - ROS_DOMAIN_ID=4
+       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+     command: >
+       bash -lc "source /opt/ros/humble/setup.bash &&

@@ -1,0 +1,26 @@
+La section de config/demo.yaml que le projet ajoute. S'applique depuis la racine du clone du
+dépôt de mission, avec git apply demo.yaml.diff. C'est le cinquième point de contact du projet,
+« la config », et c'est le seul qui ne se voit pas dans le code.
+
+Pourquoi une section à part plutôt qu'une clé de plus sous demo_mission: ? Un fichier de
+paramètres ROS 2 est indexé par nom de nœud, et demo.yaml commence par demo_mission: : voir
+5.3-projet/README.md, « Les fichiers à toucher ».
+
+Le même fichier vit en deux endroits : demo_ws/src/demo_bringup/config/demo.yaml dans le
+workspace de la démo, et config/demo.yaml dans le clone, où le launch le lit
+(/aeac/config/demo.yaml). C'est la copie du clone qui compte au lancement.
+
+diff --git a/config/demo.yaml b/config/demo.yaml
+index 7d31299..070ec82 100644
+--- a/config/demo.yaml
++++ b/config/demo.yaml
+@@ -10,3 +10,9 @@ demo_mission:
+     arrival_radius_m: 3.0    # rayon d'arrivée sur le waypoint et sur le retour, mètres
+     act_duration_s: 5.0      # durée de l'état ACT, secondes
+     state_rate_hz: 2.0       # fréquence du timer : publication de l'état et des setpoints
++
++# Ajouté par le projet 5.3 : un fichier de paramètres ROS 2 est indexé par nom de nœud, donc le
++# moniteur a sa propre section. Rien ici n'est écrit dans le code du nœud.
++mission_monitor:
++  ros__parameters:
++    battery_warn_v: 14.0     # tension sous laquelle le moniteur avertit une fois, volts

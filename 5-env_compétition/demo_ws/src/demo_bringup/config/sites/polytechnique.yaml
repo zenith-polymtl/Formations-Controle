@@ -1,0 +1,15 @@
+# Site « polytechnique » : exemple de second terrain, à copier dans config/sites/ du dépôt.
+# Coordonnées approximatives du campus, à remplacer par celles du terrain réel avant de voler.
+# Mêmes clés que sites/sim.yaml : le launch ne lit que celles-là.
+site:
+  name: polytechnique
+  home:
+    lat: 45.5048
+    lon: -73.6132
+    alt: 60.0         # mètres AMSL
+  scene:
+    # Points de la mission en lat/lon. Les clés sont à définir par la mission.
+    target:
+      lat: 45.5056
+      lon: -73.6120
+  altitude_agl: 10.0  # altitude de travail au-dessus du sol, mètres

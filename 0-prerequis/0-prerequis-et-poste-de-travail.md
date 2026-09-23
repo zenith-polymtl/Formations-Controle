@@ -2,7 +2,7 @@
 
 ## Avant de commencer
 
-**Le parcours.** Cinq modules, dans l'ordre ; chacun suppose les précédents.
+**Le parcours.** Six modules, dans l'ordre ; chacun suppose les précédents.
 
 | Module | Ce qu'on y fait | Durée |
 |---|---|---|
@@ -11,6 +11,7 @@
 | Formation 2 | WSL, Docker, Compose et Make : l'environnement de l'équipe | 3 h |
 | Formations 3.1 et 3.2 | ROS 2 : nodes, topics, launch, paramètres, services | 3 h 30 |
 | Formations 3.3 et 3.4 | mavros, puis une node qui pilote le drone au clavier | 4 h |
+| Formation 5 | L'environnement de compétition : le dépôt de mission, une mission en simulation, un nœud de plus | 6 h 15 |
 
 Ces durées sont des estimations : si un module prend le double, ce n'est pas un problème de votre côté, dites-le nous, ça sert à corriger la formation.
 

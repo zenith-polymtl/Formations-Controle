@@ -8,15 +8,17 @@
 # C     : la mission, donc le workspace workspaces/$(C)_ws
 # IMG   : le conteneur dans lequel on travaille : dev | drone | gcs | vision | sim
 # DRONE : la config Zenoh sol, config/drones/$(DRONE).json5
+# SITE  : le terrain en simulation, config/sites/$(SITE).yaml
 C      ?= gcs
 IMG    ?= dev
 DRONE  ?= hexa
+SITE   ?= sim
 WS     := workspaces/$(C)_ws
 COMPOSE := compose/$(IMG).yml
 # IP de Windows vue depuis WSL, pour joindre le SITL de Mission Planner (tcp 5762)
 SITL_HOST ?= $(shell ip route 2>/dev/null | awk '/default/ {print $$3; exit}')
 MODELS_URL ?=
-export C IMG DRONE SITL_HOST
+export C IMG DRONE SITE SITL_HOST
 
 SERVICES := lo-multicast mavros zed zenoh-air vision mission
 
@@ -29,10 +31,10 @@ help: ## Affiche cette aide
 	  /^##@/ {printf "\n%s\n", substr($$0, 5)} \
 	  /^[a-zA-Z0-9_%-]+:.*##/ {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo
-	@echo "Variables : C=$(C) (mission)  IMG=$(IMG) (conteneur)  DRONE=$(DRONE)"
+	@echo "Variables : C=$(C) (mission)  IMG=$(IMG) (conteneur)  DRONE=$(DRONE)  SITE=$(SITE) (simulation)"
 
 print-vars: ## Affiche les variables résolues (pour déboguer)
-	@echo "C=$(C)  WS=$(WS)  IMG=$(IMG)  COMPOSE=$(COMPOSE)  DRONE=$(DRONE)  SITL_HOST=$(SITL_HOST)"
+	@echo "C=$(C)  WS=$(WS)  IMG=$(IMG)  COMPOSE=$(COMPOSE)  DRONE=$(DRONE)  SITE=$(SITE)  SITL_HOST=$(SITL_HOST)"
 
 init: ## Après le clone : sous-modules, réglages git, dossiers ignorés. Sans risque à relancer.
 	git submodule update --init --recursive
@@ -62,7 +64,7 @@ dev: ## Entre dans le conteneur de développement (tout le dépôt est monté da
 	docker compose -f compose/dev.yml up -d dev
 	docker compose -f compose/dev.yml exec dev bash
 
-sim: ## Simulation de la mission C : mavros vers le SITL de Mission Planner + launch avec sim:=true
+sim: ## Simulation de la mission C : mavros vers le SITL + launch avec sim:=true site:=$(SITE)
 	docker compose -f compose/sim.yml up --abort-on-container-exit
 
 shell: ## Second terminal dans le conteneur IMG déjà lancé (make shell IMG=sim pour les mocks)
@@ -79,7 +81,7 @@ link: ## Lie un paquet partagé au workspace de C : make link C=water PKG=tools
 
 bag: ## Enregistre un rosbag daté dans bags/ (topics /aeac/* et mavros utiles), depuis le conteneur IMG
 	docker compose -f $(COMPOSE) exec $(IMG) bash -lc \
-	  'source /opt/ros/humble/setup.bash && ros2 bag record -o /aeac/bags/$$(date +%F_%H-%M) \
+	  'source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 bag record -o /aeac/bags/$$(date +%F_%H-%M) \
 	   -e "/aeac/.*|/mavros/(state|rc/in|local_position/pose|global_position/global|battery)"'
 
 ##@ 2. Test sur véhicule (à la main, en avant-plan, Ctrl-C pour arrêter)
