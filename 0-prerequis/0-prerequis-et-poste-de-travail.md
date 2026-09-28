@@ -11,7 +11,7 @@
 | Formation 2 | WSL, Docker, Compose et Make : l'environnement de l'équipe | 3 h |
 | Formations 3.1 et 3.2 | ROS 2 : nodes, topics, launch, paramètres, services | 3 h 30 |
 | Formations 3.3 et 3.4 | mavros, puis une node qui pilote le drone au clavier | 4 h |
-| Formation 5 | L'environnement de compétition : le dépôt de mission, une mission en simulation, un nœud de plus | 6 h 15 |
+| Formation 5 | L'environnement de compétition : le repo de mission, une mission en simulation, un node de plus | 5 h 45 |
 
 Ces durées sont des estimations : si un module prend le double, ce n'est pas un problème de votre côté, dites-le nous, ça sert à corriger la formation.
 
@@ -91,7 +91,7 @@ Trois notions qui reviennent partout :
 
 - **Le chemin.** Absolu quand il part de la racine (`/home/colin/projet`, ou `C:/Users/colin/projet` dans Git Bash), relatif quand il part du dossier courant (`projet/src`). `.` est le dossier courant, `..` son parent.
 - **Les variables d'environnement.** Des valeurs nommées que le terminal et les programmes lisent : `$HOME` est votre dossier personnel, `$PATH` la liste des dossiers où le terminal cherche les commandes. `export NOM=valeur` en crée une pour la session en cours ; c'est ainsi que ROS 2 sait quel réseau utiliser (`ROS_DOMAIN_ID`, dans la formation 2).
-- **`source fichier`** roule un fichier de commandes dans le terminal courant, pour qu'il en garde les variables. C'est la commande qui rend ROS 2 utilisable dans la formation 3 (`source /opt/ros/humble/setup.bash`), et le piège numéro un quand on l'oublie.
+- **`source fichier`** roule un fichier de commandes dans le terminal courant, pour qu'il en garde les variables. C'est la commande qui rend ROS 2 utilisable dans la formation 3 (`source /opt/ros/humble/setup.bash`). Dans le repo de mission de la formation 5, les shells des conteneurs la font pour vous.
 
 **À vous.** Dans Git Bash, recréer cette arborescence avec `mkdir` et `touch`, puis la vérifier avec `ls -R` :
 

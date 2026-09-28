@@ -8,11 +8,11 @@ est le prétexte.
 
 - [ ] `packages/tools/tools/topics.py` gagne `DEMO_SUMMARY = f'{EXTERNAL}/demo/summary'`, dans
       la section des externes. En formation, cette ligne reste une modification locale du
-      sous-module : elle n'est pas commise, elle est citée dans la description de la PR, et
-      c'est le lead qui la porte ensuite dans le dépôt `tools`.
-- [ ] Le nœud publie sur `topics.DEMO_SUMMARY`. Aucun `'/aeac/...'` écrit en clair nulle part,
-      ni dans le nœud, ni dans le launch.
-- [ ] `/mavros/battery` est une constante de module du nœud et n'est pas dans `topics.py` :
+      submodule : elle n'est pas commise, elle est citée dans la description de la PR, et
+      c'est le lead qui la porte ensuite dans le repo `tools`.
+- [ ] Le node publie sur `topics.DEMO_SUMMARY`. Aucun `'/aeac/...'` écrit en clair nulle part,
+      ni dans le node, ni dans le launch.
+- [ ] `/mavros/battery` est une constante de module du node et n'est pas dans `topics.py` :
       `topics.py` ne décrit que les topics `/aeac` écrits par l'équipe.
 
 Question à poser : « si on renomme le topic demain, combien de fichiers changent ? »
@@ -24,7 +24,7 @@ Question à poser : « si on renomme le topic demain, combien de fichiers change
       c'est le seul endroit où les noms d'états apparaissent en texte.
 - [ ] Le cas « aucun état reçu » est traité (`None`, label `INCONNU`), pas confondu avec `IDLE`.
 
-Question à poser : « que publie ton nœud dans la seconde qui suit son démarrage, avant que la
+Question à poser : « que publie ton node dans la seconde qui suit son démarrage, avant que la
 mission ait parlé ? »
 
 ## 3. Pas de `time.sleep` dans un callback
@@ -43,7 +43,7 @@ Question à poser : « où part le callback de la batterie pendant que le tien d
 - [ ] `sensor_msgs` et non `mavros_msgs` pour `BatteryState` : demander comment la recrue l'a
       vérifié (`ros2 interface show sensor_msgs/msg/BatteryState`).
 - [ ] Mainteneur réel avec un courriel réel, licence `Apache-2.0`, description en une phrase
-      qui dit ce que le paquet fait. `make check` ne doit plus rien dire sur `demo_monitor`.
+      qui dit ce que le package fait. `make check` ne doit plus rien dire sur `demo_monitor`.
 - [ ] `setup.py` porte les mêmes quatre champs, et `entry_points` déclare
       `monitor = demo_monitor.monitor:main`. `check.py` ne regarde pas `setup.py` : c'est au
       lead de le faire.
@@ -74,12 +74,12 @@ combien de lignes sortent ? » La bonne réponse est une, et elle demande la mar
 ## Le reste de la PR
 
 - [ ] `config/demo.yaml` gagne une section `mission_monitor: ros__parameters:` avec
-      `battery_warn_v`. Le seuil n'est réécrit ni dans le launch, ni dans le nœud autrement
+      `battery_warn_v`. Le seuil n'est réécrit ni dans le launch, ni dans le node autrement
       que comme défaut de déclaration. Un fichier de paramètres ROS 2 est indexé par nom de
-      nœud : voir `5.3-projet/README.md`, « Les fichiers à toucher ».
+      node : voir `5.3-projet/README.md`, « Les fichiers à toucher ».
 - [ ] Le launch lance le moniteur en même temps que la mission et lui passe
       `config/demo.yaml` tel quel, sans relire le YAML lui-même. Si la recrue a ajouté ses clés
-      sous `demo_mission:` au lieu d'une section à son nom, le nœud tourne quand même et rien
+      sous `demo_mission:` au lieu d'une section à son nom, le node tourne quand même et rien
       n'échoue : lui faire lancer `ros2 param get /mission_monitor battery_warn_v` et constater
       que le seuil est resté au défaut du code. C'est la panne la plus discrète du projet, et
       la raison d'être du cinquième fichier à toucher.
@@ -94,8 +94,8 @@ combien de lignes sortent ? » La bonne réponse est une, et elle demande la mar
       protège le journal, l'autre protège le JSON envoyé au sol.
 - [ ] Le temps dans l'état est celui que la mission publie, republié tel quel : le moniteur ne
       tient pas de chronomètre à lui.
-- [ ] La recrue sait que ce résumé ne prouve pas que le nœud de mission est vivant : il sort à
+- [ ] La recrue sait que ce résumé ne prouve pas que le node de mission est vivant : il sort à
       1 Hz même si la mission est morte, avec le dernier état reçu. Un résumé qui arrive n'est
       pas une mission qui va bien.
-- [ ] Le nœud ne publie rien vers mavros, n'appelle aucun service, ne change aucun mode. Il
+- [ ] Le node ne publie rien vers mavros, n'appelle aucun service, ne change aucun mode. Il
       regarde.

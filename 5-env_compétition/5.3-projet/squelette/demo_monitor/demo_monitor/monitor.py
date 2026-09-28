@@ -21,7 +21,7 @@ from std_msgs.msg import String
 
 from tools import topics
 
-# Paquet tiers : topics.py ne décrit que les topics /aeac écrits par l'équipe.
+# Package tiers : topics.py ne décrit que les topics /aeac écrits par l'équipe.
 MAVROS_BATTERY = '/mavros/battery'
 
 LABELS = {MissionState.IDLE: 'IDLE', MissionState.GOTO: 'GOTO',
@@ -91,7 +91,7 @@ class MissionMonitor(Node):
 
     def tick(self):
         # TODO 6 : remplir un std_msgs/String avec format_summary(...) et le publier sur
-        #   self.summary_pub. Rien d'autre ne publie dans ce nœud.
+        #   self.summary_pub. Rien d'autre ne publie dans ce node.
         pass
 
 

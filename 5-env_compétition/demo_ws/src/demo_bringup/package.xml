@@ -9,7 +9,6 @@
 
   <exec_depend>ros2launch</exec_depend>
   <exec_depend>demo_mission</exec_depend>
-  <exec_depend>python3-yaml</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>

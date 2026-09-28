@@ -1,7 +1,7 @@
-La ligne à ajouter dans topics.py. tools est un sous-module, donc son propre dépôt : ce diff
-s'applique depuis la racine du clone de tools (packages/tools/ dans le dépôt de mission), avec
-git apply topics.py.diff, et la PR se fait dans le dépôt tools avant de bouger le pointeur du
-dépôt de mission (make bump PKG=tools). La ligne va avec les autres externes : le préfixe
+La ligne à ajouter dans topics.py. tools est un submodule, donc son propre repo : ce diff
+s'applique depuis la racine du clone de tools (packages/tools/ dans le repo de mission), avec
+git apply topics.py.diff, et la PR se fait dans le repo tools avant de bouger le pointeur du
+repo de mission (make bump PKG=tools). La ligne va avec les autres externes : le préfixe
 EXTERNAL est ce qui fait traverser la radio au résumé.
 
 diff --git a/tools/topics.py b/tools/topics.py

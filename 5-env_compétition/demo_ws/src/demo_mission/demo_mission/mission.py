@@ -1,11 +1,13 @@
 """Mission démo de la formation 5 : le squelette d'une mission de compétition, en quatre états.
 
-IDLE (attente du GO sur la manette), GOTO (vol vers le waypoint du site), ACT (action factice),
-RETURN (retour au départ), puis IDLE. Le nœud n'arme jamais et ne change jamais de mode : c'est
-le pilote qui arme et qui met en GUIDED. Trois questions auxquelles ce fichier doit répondre :
+IDLE (attente du GO sur la manette), GOTO (vol vers le waypoint du site), ACT (l'action de la
+mission), RETURN (retour au départ), puis IDLE. Le node n'arme jamais et ne change jamais de
+mode : c'est le pilote qui arme et qui met en GUIDED. Cette machine à états et la forme de son
+message d'état sont un exemple pédagogique : une mission choisit les siens comme elle veut.
+Trois questions auxquelles ce fichier doit répondre :
   1. Où sont les noms de topics ? Ceux de l'équipe dans tools/topics.py, ceux de mavros dessous.
   2. Où sont les états ? Dans custom_interfaces/msg/MissionState.msg, jamais redéfinis ici.
-  3. Où est le waypoint ? Dans config/sites/<site>.yaml, aplati en paramètres par le launch.
+  3. Où est le waypoint ? Dans config/sites/<site>.yaml, passé tel quel au node par le launch.
 """
 
 import math
@@ -20,7 +22,7 @@ from sensor_msgs.msg import NavSatFix
 
 from tools import topics
 
-# Topics de mavros. Ils appartiennent à un paquet tiers : topics.py ne décrit que les topics
+# Topics de mavros. Ils appartiennent à un package tiers : topics.py ne décrit que les topics
 # /aeac écrits par l'équipe, dont le deuxième segment décide de ce qui traverse la radio.
 MAVROS_STATE = '/mavros/state'
 MAVROS_RC_IN = '/mavros/rc/in'
@@ -138,7 +140,9 @@ class DemoMission(Node):
             self.warned_not_ready = True
         self.publish_state(elapsed_s)
         if self.state in (MissionState.GOTO, MissionState.RETURN):
-            # mavros exige un flux continu de setpoints, sinon l'autopilote les ignore.
+            # Un setpoint de position globale peut n'être envoyé qu'une fois s'il est bien reçu
+            # (les setpoints de vitesse et d'accélération, eux, se republient en continu). La
+            # démo le republie quand même à chaque tour : une ligne, et un message perdu passe.
             self.publish_setpoint(self.target if self.state == MissionState.GOTO else self.home)
 
     def distance_to(self, point):
@@ -152,8 +156,7 @@ class DemoMission(Node):
         """Seul endroit où l'état change : il se met à jour, s'horodate et se logue."""
         self.get_logger().info(f'Transition {LABELS[self.state]} -> {LABELS[new_state]}')
         if MissionState.IDLE in (self.state, new_state):
-            # Entrer ou sortir d'IDLE oublie le GO : il faudra relâcher puis remonter
-            # l'interrupteur pour la mission suivante.
+            # Entrer ou sortir d'IDLE oublie le GO : il faudra relâcher puis remonter.
             self.go, self.go_released = False, False
         self.state = new_state
         self.entered_at = self.get_clock().now()
@@ -164,14 +167,19 @@ class DemoMission(Node):
             else:
                 self.get_logger().warn('Le pilote a repris la main, mission interrompue')
         elif new_state == MissionState.ACT:
-            # L'unique appel matériel de la démo, et donc le seul endroit entouré d'un test sur
-            # le paramètre sim : le launch reste le même en simulation et en vol.
+            # self.sim est un outil : il dit au node qu'aucun matériel n'est branché, et le
+            # launch reste le même en simulation et en vol. Ici il n'y a qu'un endroit qui en
+            # dépend ; une vraie mission les centralise (une méthode _setup_hardware() par
+            # exemple) au lieu de semer des tests sur sim dans tout le fichier.
             if not self.sim:
                 self._trigger_payload()
             else:
-                self.get_logger().info("Simulation : action factice, rien n'est déclenché")
+                self.get_logger().info("Simulation : l'action de la mission est sautée "
+                                       '(aucun matériel branché)')
 
     def _trigger_payload(self):
+        """L'action de la mission : larguer, photographier, ouvrir un servo. C'est ici qu'une
+        vraie mission appelle son matériel, et c'est le seul endroit qui le fait."""
         self.get_logger().warn('Déclenchement réel : à implémenter par la mission')
 
     def publish_state(self, elapsed_s):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Surveillance de la mission démo : solution du projet du document 5.3.
 
-Le nœud `mission_monitor` regarde et ne touche à rien : il s'abonne à l'état de la mission et à
+Le node `mission_monitor` regarde et ne touche à rien : il s'abonne à l'état de la mission et à
 la batterie de mavros, et publie une fois par seconde un résumé JSON sur un topic externe.
 
 Les six règles que ce fichier illustre sont dans `5.3-projet/README.md` ; la ligne qui respecte
@@ -20,7 +20,7 @@ from std_msgs.msg import String
 
 from tools import topics
 
-# Paquet tiers : topics.py ne décrit que les topics /aeac écrits par l'équipe.
+# Package tiers : topics.py ne décrit que les topics /aeac écrits par l'équipe.
 MAVROS_BATTERY = '/mavros/battery'
 
 # Règle 2 : le label vient d'un dict indexé par les constantes du message. Aucune chaîne d'état
