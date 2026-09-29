@@ -1,31 +1,31 @@
 Le moniteur ajouté au launch file de demo_bringup. S'applique depuis la racine du clone du repo
 de mission, où demo_ws a été copié dans workspaces/, avec git apply mission.launch.py.diff. La
-section mission_monitor: de config/demo.yaml doit être en place (voir demo.yaml.diff), sinon le
+section mission_monitor: de config/demo.yaml doit être en place (voir demo.yaml.diff), sinon la
 node démarre quand même, avec les défauts écrits dans son code.
 
-Deux choses à remarquer. Le moniteur est un second Node dans le même launch file : il démarre et
+Deux choses à remarquer. Le moniteur est une seconde Node dans le même launch file : il démarre et
 s'arrête avec la mission, personne n'a à penser à le lancer. Et les deux nodes reçoivent le
 même fichier de paramètres, passé tel quel, parce qu'un fichier de paramètres ROS 2 est indexé
-par nom de node (voir 5.3-projet/README.md, « Les fichiers à toucher »). Le moniteur ne reçoit
+par nom de node (voir 5.3, section 3.2). Le moniteur ne reçoit
 pas les paramètres du site : il ne vole pas, il regarde.
 
 diff --git a/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py b/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
-index 674d3a8..c7e30e3 100644
+index 8dcc38c..21f090e 100644
 --- a/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
 +++ b/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
 @@ -1,9 +1,11 @@
--"""Launch file de la mission démo : un node, deux fichiers de configuration du repo.
-+"""Launch file de la mission démo : le node de mission, le moniteur du projet 5.3, et deux
+-"""Launch file de la mission démo : une node, deux fichiers de configuration du repo.
++"""Launch file de la mission démo : la node de mission, le moniteur du projet 5.3, et deux
 +fichiers de configuration du repo.
  
  `config/demo.yaml` et `config/sites/<site>.yaml` sont tous deux au format paramètres ROS 2 :
--ils se passent tels quels au node, sans lecture YAML ici. Les clés imbriquées du site
--(`home: {lat: ...}`) arrivent au node sous les noms `home.lat`, `home.lon`, `home.alt`,
--`target.lat`, `target.lon` et `altitude_agl`.
+-ils se passent tels quels à la node, sans lecture YAML ici. Les clés imbriquées du site
+-(`target: {north_m: ...}`) arrivent à la node sous les noms `target.north_m`, `target.east_m`
+-et `altitude_agl`.
 +ils se passent tels quels aux nodes, sans lecture YAML ici. `config/demo.yaml` est indexé par
 +nom de node, et il porte une section par node (`demo_mission:` et `mission_monitor:`). Les clés
-+imbriquées du site (`home: {lat: ...}`) arrivent au node sous les noms `home.lat`, `home.lon`,
-+`home.alt`, `target.lat`, `target.lon` et `altitude_agl`.
++imbriquées du site (`target: {north_m: ...}`) arrivent à la node de mission sous les noms
++`target.north_m`, `target.east_m` et `altitude_agl`.
  """
  
  from launch import LaunchDescription

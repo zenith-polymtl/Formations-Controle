@@ -1,15 +1,13 @@
-# la formation 5 : l'environnement de compétition
+# Formation 5 : l'environnement de compétition
 
-Documents : [5.1](5.1-le-depot-vu-de-haut.md), [5.2](5.2-une-mission-en-simulation.md), [5.3](5.3-projet-ajouter-un-noeud.md), [annexe 5.4 (leads)](5.4-annexe-leads-creer-un-environnement.md), [5.5](5.5-pour-plus-tard.md).
+Documents : [5.1](5.1-le-repo-vu-de-haut.md), [5.2](5.2-une-mission-en-simulation.md), [5.3](5.3-projet-ajouter-un-node.md), [annexe 5.4 (leads)](5.4-annexe-leads-creer-un-environnement.md), [5.5](5.5-pour-plus-tard.md).
 
-Prérequis : formations 2 et 3. La formation 4 n'est pas nécessaire, le simulateur est celui de Mission Planner.
+Prérequis : formation 0 (git, section 3), formation 1 (le SITL dans Mission Planner), formations 2 et 3. La formation 4 n'est pas nécessaire, le simulateur est celui de Mission Planner.
 
-Objectifs :
+Objectifs, par document :
 
-- **le repo vu de haut** : qui tourne où (Jetson, radio, portable), ce qui est pour le drone et ce qui est pour le développement, où écrire (`NOTES.md`, `procédure.md`). Réussi si vous dessinez le schéma de mémoire.
-- **le faire tourner pour la première fois** : clone, `make init`, `make build C=`, `make dev`. Réussi si `ros2 topic list` répond dans le conteneur, sans rien sourcer à la main.
-- **une mission en simulation** : `make sim C=demo`, puis `make takeoff` et `make rc` dans un second terminal, `make echo T=` dans un troisième. Réussi si la machine à états passe par ses quatre états sans drone.
-- **la config** : mission, site, drone. Réussi si vous changez un waypoint sans toucher au code, et si `make sim C=demo SITE=cimetiere` part du bon terrain.
-- **Docker, workspaces et submodules en gestes** : un Dockerfile par rôle et l'en-tête « ce qui diffère » ; une mission a son workspace, et les liens vers les packages partagés y sont déjà posés ; `make init`, `make status`, et si un package partagé est « modifié localement », demandez à un lead. Pas plus.
-- **le Makefile en trois sections** : dev et sim, test sur véhicule, déploiement (à connaître, pas à pratiquer) ; `make help`, `C=`, `SITE=`, `T=`, et `IMG=` seulement pour viser un autre conteneur (`make logs IMG=mavros-sim`). Une commande qu'on retape souvent devient une cible.
-- **les règles** : le code de mission n'arme jamais, seuls les nodes `*_test` de `sim_mocks` le font et aucun launch file de mission ne les inclut ; `main` = ce qui vole, une branche puis une PR, `make check` avant la PR.
+- **la formation 5.1, le repo vu de haut** : qui tourne où (poste WSL, Jetson, portable GCS) ; les sept dossiers du repo ; `make help` en trois sections, dont seule la première (développement et simulation) se pratique, et les variables `C=`, `SITE=`, `SITL=` (que `make print-vars` traduit en `FCU_URL`), `IMG=` seulement pour viser un autre conteneur ; les submodules en gestes (`make init`, `make status`, un lead si un package partagé est modifié) ; clone, `make init`, `make build C=gcs`, `make dev` ; les règles du repo, dont les deux premières : le code de mission n'arme jamais et ne change jamais de mode, et `main` est ce qui vole. Réussi si vous dessinez le schéma de mémoire, si vous nommez les sept dossiers écran éteint, et si le heartbeat du sol défile dans un `ros2 topic echo` sans que vous ayez rien sourcé à la main.
+- **la formation 5.2, une mission en simulation** : `make sim C=demo`, puis `make takeoff` et `make rc` dans un second terminal, `make echo T=` dans un troisième ; `sim:=true`, le même launch file en vol et en simulation, et `self.sim` testé en un seul endroit de la node ; la config rangée selon ce qui la fait changer (mission, site, drone) ; `make bag` ; chercher une panne dans l'ordre : conteneur, puis node, puis donnée. Réussi si la machine à états passe par ses quatre états sans drone, si vous déplacez le waypoint sans toucher au code, si `ros2 param get /demo_mission target.north_m` renvoie la valeur du site `cimetiere` avec `make sim C=demo SITE=cimetiere` (sans donner le GO), et si `ros2 bag info` montre le topic d'état avec un nombre de messages cohérent avec sa fréquence et la durée.
+- **la formation 5.3, projet : ajouter une node** : un package, son `package.xml`, une constante dans `tools/topics.py`, un `Node` dans le launch file, une section à son nom de node dans le YAML de la mission, puis `make check`, une branche et une PR. Réussi si le résumé sort à 1 Hz, si `ros2 param get` renvoie la valeur écrite dans le YAML, et si la PR est ouverte.
+- **l'annexe 5.4, pour les leads** (lecture) : créer un repo de mission à partir du template, ajouter une mission, un package partagé, un conteneur, un service au boot ; `make link` et `make bump`, les gestes que la recrue n'a pas à faire.
+- **la formation 5.5, pour plus tard** (lecture) : ce que la formation 5 laisse de côté, l'annexe des leads, `procédure.md`, la formation 6 et la formation vision à venir.

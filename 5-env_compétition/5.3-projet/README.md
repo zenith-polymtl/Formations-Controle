@@ -1,118 +1,56 @@
-# Projet du document 5.3 : le node `mission_monitor`
+# Projet du document 5.3 : la node `mission_monitor`
+
+Ce dossier est l'énoncé du projet. Le mode d'emploi, pas à pas, est le document [5.3](../5.3-projet-ajouter-un-node.md).
 
 ## Le cahier des charges
 
-> Un node `mission_monitor` dans `demo_ws/src/demo_monitor/` : il s'abonne à l'état de la
-> mission et à `/mavros/battery`, et publie un résumé sur un topic externe (état courant,
-> tension, temps passé dans l'état) à 1 Hz. Il n'arme rien, ne change rien, il regarde. C'est
-> le node le plus simple qui oblige à toucher à tout : un package, un `package.xml`, une
-> constante dans `topics.py`, un launch file, la config.
+Une node `mission_monitor`, dans un package `demo_monitor` posé dans `workspaces/demo_ws/src/`. Elle écoute l'état de la mission et `/mavros/battery` (deux subscribers), et publie à 1 Hz un résumé sur un topic externe : l'état courant, la tension, le temps passé dans l'état. Elle n'arme rien, ne commande rien, elle regarde.
 
-Le message publié est un `std_msgs/String` contenant du JSON sur une ligne :
+Le résumé est un `std_msgs/String` qui contient du JSON sur une ligne :
 
 ```json
 {"state": "GOTO", "voltage": 15.8, "time_in_state": 12.4}
 ```
 
-`voltage` vaut `null` tant qu'aucune mesure n'est arrivée, et aussi quand la mesure arrive vide
-(`sensor_msgs/BatteryState` met `NaN` dans les champs que l'autopilote ne renseigne pas, et
-`NaN` n'est pas du JSON) : une batterie qu'on n'a pas mesurée n'est pas une batterie à zéro
-volt. `time_in_state` n'est pas calculé par le moniteur : la mission le publie, il le republie.
+`voltage` vaut `null` tant qu'aucune mesure n'est arrivée : une batterie qu'on n'a pas mesurée n'est pas une batterie à zéro volt. `time_in_state` n'est pas calculé par le moniteur : la mission le publie, il le republie.
 
-Ce résumé dit ce que le moniteur a vu, pas que la mission va bien : il sort à 1 Hz même si le
-node de mission est mort. Il ne prouve donc pas qu'il est vivant, `ros2 node list` le dit.
+Quand la tension passe sous `battery_warn_v` (14.0 V, réglé dans `config/demo.yaml`), la node écrit un `WARN`, une seule fois par lancement.
 
-## Par où commencer
+Le résumé dit ce que le moniteur a vu, pas que la mission va bien : il sort à 1 Hz même si la node de mission est morte. C'est `ros2 node list` qui dit si la mission est vivante.
 
-Copier le squelette dans le workspace de la démo, dans le clone du repo de mission :
+## Les fichiers à toucher, dans l'ordre
 
-```bash
-cp -r <dossier de la formation>/5-env_compétition/5.3-projet/squelette/demo_monitor workspaces/demo_ws/src/
-make build C=demo
-```
-
-`make build C=demo` réussit : le package compile tel quel, les imports, la classe, le
-paramètre, les abonnements, la publication et le timer sont en place. Il reste six
-`# TODO n :`, tous dans `demo_monitor/monitor.py`, et tant qu'ils ne sont pas écrits le node ne
-publie rien. Le voir tourner demande le launch et la ligne de `topics.py` : c'est la section 3
-du document 5.3.
-
-## Les fichiers à toucher
-
-| Fichier | Ce qu'on y fait |
-|---|---|
-| `workspaces/demo_ws/src/demo_monitor/demo_monitor/monitor.py` | Les six TODO |
-| `workspaces/demo_ws/src/demo_monitor/package.xml` | Remplir mainteneur, licence, description |
-| `workspaces/demo_ws/src/demo_monitor/setup.py` | Les mêmes trois champs, et vérifier l'entrée `monitor` |
-| `packages/tools/tools/topics.py` | Ajouter `DEMO_SUMMARY` (submodule : pour la formation, on s'arrête à la modification locale, voir 5.3, section 2.4) |
-| `workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py` | Ajouter le node au launch |
-| `config/demo.yaml` | Ajouter la section `mission_monitor:` avec `battery_warn_v: 14.0` |
-
-Sur la dernière ligne du tableau : un fichier de paramètres ROS 2 est indexé par nom de node,
-c'est-à-dire que le premier niveau du YAML est le nom du node qui recevra les clés qui suivent.
-`config/demo.yaml` commence par `demo_mission:`, donc le passer tel quel à un node nommé
-`mission_monitor` ne lui donne rien, sans erreur ni avertissement : les paramètres restent aux
-défauts écrits dans le code. Le moniteur a donc sa propre section dans le même fichier, que le
-launch passe aux deux nodes ; le seuil ne s'écrit nulle part ailleurs dans le node.
-
-Le fichier à modifier est celui de la racine du clone, que le launch lit. Une fois la section
-`mission_monitor:` ajoutée, ne recopiez plus par-dessus le `demo.yaml` du workspace
-(`demo_ws/src/demo_bringup/config/`) : c'est la version d'origine, il effacerait votre section.
-
-`topics.py` est dans `packages/tools`, qui est un submodule : c'est un autre repo, avec sa
-propre PR. On ajoute la ligne là-bas, on la fait relire, puis on avance le pointeur du repo de
-mission (`make bump PKG=tools`). C'est lent exprès : un nom de topic est une frontière. Pour la
-formation, on s'arrête à la modification locale : voir 5.3, section 2.4.
+| Fichier | Ce qu'on y fait | Section de 5.3 |
+|---|---|---|
+| `workspaces/demo_ws/src/demo_monitor/` | Copier le squelette | 2.1 |
+| `workspaces/demo_ws/src/demo_monitor/demo_monitor/monitor.py` | Les six TODO | 2.2 et 2.3 |
+| `packages/tools/tools/topics.py` | Ajouter `DEMO_SUMMARY = f'{EXTERNAL}/demo/summary'`. `tools` est un submodule, donc un autre repo : la ligne reste une modification locale, hors de votre commit, et le lead la porte dans `tools` | 2.4 |
+| `workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py` | Ajouter la node au launch file | 3.1 |
+| `workspaces/demo_ws/src/demo_bringup/package.xml` | Ajouter `<exec_depend>demo_monitor</exec_depend>` : le launch file lance le moniteur, donc `demo_bringup` en dépend | 3.1 |
+| `config/demo.yaml`, à la racine du clone | Ajouter une section `mission_monitor:` avec `battery_warn_v: 14.0` | 3.2 |
+| `workspaces/demo_ws/src/demo_monitor/package.xml` et `setup.py` | Remplir mainteneur, courriel, licence (`Apache-2.0`) et description, que le squelette laisse vides exprès | 3.5 |
 
 ## Les six règles
 
-Le détail de chacune, avec la ligne du fichier qui la respecte, est dans la section 2.3 du
-document [5.3](../5.3-projet-ajouter-un-noeud.md). Ici, la liste seule :
+Le détail de chacune, avec la ligne du fichier qui la respecte, est dans la section 2.3 du document 5.3. Ici, la liste seule :
 
-1. **Le nom du topic vient de `topics.py`.**
-2. **L'état se compare à une constante de `MissionState`.**
-3. **Pas de `time.sleep` dans un callback.**
-4. **`package.xml` déclare ce qui est importé.**
-5. **Le résumé est externe parce que le sol veut le voir.**
-6. **Logs en français, `INFO` pour les événements, jamais de périodique.**
+1. Le nom du topic vient de `topics.py`.
+2. L'état se compare à une constante de `MissionState`.
+3. Pas de `time.sleep` dans un callback.
+4. `package.xml` déclare ce qui est importé.
+5. Le résumé est externe parce que le sol veut le voir.
+6. Logs en français, `INFO` pour les événements, jamais de périodique.
 
-La grille de relecture est [`solution/CHECKLIST.md`](solution/CHECKLIST.md), publique : la lire
-avant de déposer sa PR est une bonne idée.
+## C'est fini quand
 
-## Ce que `make check` va relever, et pourquoi c'est voulu
+1. Avec `make sim C=demo` qui tourne, `ros2 topic hz /aeac/external/demo/summary` donne environ 1 Hz, et le champ `state` du résumé passe de `IDLE` à `GOTO` au GO.
+2. `ros2 param get /mission_monitor battery_warn_v` suit la valeur de `config/demo.yaml` : essai à `11.0`, puis retour à `14.0`.
+3. `make check`, dans WSL hors conteneur, répond `check : rien à signaler`.
+4. Une PR est ouverte sur `mission-template` depuis votre branche `prenom/demo`, avec la ligne de `topics.py` dans sa description.
 
-Le squelette est livré avec les trois champs que `ros2 pkg create` laisse en place :
-
-```
-workspaces/demo_ws/src/demo_monitor/package.xml: mainteneur à remplir
-workspaces/demo_ws/src/demo_monitor/package.xml: licence à remplir (Apache-2.0)
-workspaces/demo_ws/src/demo_monitor/package.xml: description à remplir
-```
-
-Ces trois lignes sont l'exercice : `make check` doit sortir en erreur sur le squelette et ne
-plus rien dire sur `demo_monitor` quand le projet est fini. Un `package.xml` dont le mainteneur
-est `root@todo.todo` dit à celui qui trouve le bug six mois plus tard qu'il n'y a personne à qui
-demander, et une licence vide interdit de publier le repo. Le même travail est à faire dans
-`setup.py`, que `check.py` ne regarde pas.
-
-## Vérifier son travail
-
-```bash
-make build C=demo && make sim C=demo
-# dans un second terminal
-make shell
-ros2 topic list | grep summary          # /aeac/external/demo/summary
-ros2 topic hz /aeac/external/demo/summary   # environ 1 Hz
-ros2 topic echo --once /aeac/external/demo/summary
-ros2 param get /mission_monitor battery_warn_v   # 14.0, venu de config/demo.yaml
-make check                              # plus rien sur demo_monitor
-```
-
-Le `14.0` ne prouve rien tout seul, puisque c'est aussi le défaut du code : pour savoir si la
-section est bien lue, mettre `13.1` dans le YAML, relancer, et regarder si le node suit.
+Le lead relit la PR avec [`solution/CHECKLIST.md`](solution/CHECKLIST.md). La grille est publique : la lire avant de déposer sa PR est une bonne idée.
 
 ## Dossiers
 
 - `squelette/demo_monitor/` : le package à copier dans `workspaces/demo_ws/src/`.
-- `solution/` : pour les leads. Le package complet, les trois diffs (`topics.py`, le launch,
-  `demo.yaml`) et `CHECKLIST.md`. À ne pas distribuer avant la fin de l'atelier.
+- `solution/` : le package complet, les quatre diffs (`topics.py`, le launch file, le `package.xml` de `demo_bringup`, `demo.yaml`) et `CHECKLIST.md`. À ouvrir après avoir vraiment essayé.

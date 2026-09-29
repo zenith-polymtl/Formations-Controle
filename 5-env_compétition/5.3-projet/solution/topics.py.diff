@@ -1,8 +1,11 @@
-La ligne à ajouter dans topics.py. tools est un submodule, donc son propre repo : ce diff
-s'applique depuis la racine du clone de tools (packages/tools/ dans le repo de mission), avec
-git apply topics.py.diff, et la PR se fait dans le repo tools avant de bouger le pointeur du
-repo de mission (make bump PKG=tools). La ligne va avec les autres externes : le préfixe
-EXTERNAL est ce qui fait traverser la radio au résumé.
+La ligne à ajouter dans topics.py, avec les autres externes : le préfixe EXTERNAL est ce qui
+fait traverser la radio au résumé. tools est un submodule, donc son propre repo : ce diff
+s'applique depuis packages/tools/, avec git apply topics.py.diff.
+
+Pour la formation, la ligne reste une modification locale, sans commit, et la description de
+la PR la cite (5.3, section 2.4). Hors formation, elle passe par une PR dans le repo tools, sur
+la branche que .gitmodules lui fait suivre (aeac-2027 aujourd'hui), puis make bump PKG=tools
+avance le pointeur du repo de mission.
 
 diff --git a/tools/topics.py b/tools/topics.py
 index 356c279..7411ee8 100644

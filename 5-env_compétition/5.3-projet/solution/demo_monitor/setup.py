@@ -13,7 +13,7 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='Colin Cormier',
+    maintainer='Colin Rousseau',
     maintainer_email='colinc131@gmail.com',
     description='Mission monitor for Zenith training 5: publishes a JSON summary of the demo mission',
     license='Apache-2.0',

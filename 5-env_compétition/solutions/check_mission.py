@@ -1,12 +1,14 @@
-"""Test hors ROS de la demo (haversine_m, next_state, transitions du noeud) avec des stubs rclpy.
+"""Test hors ROS de la demo (haversine_m, next_state, transitions de la node) avec des stubs rclpy.
 
 Pour les leads : `python 5-env_compétition/solutions/check_mission.py` apres toute retouche de
-demo_ws. Ne pas copier dans le depot de mission (pas de tests la-bas).
+demo_ws. Ne pas copier dans le repo de mission (pas de tests la-bas).
 """
 import importlib.util
 import os
 import sys
 import types
+
+sys.dont_write_bytecode = True   # pas de __pycache__ laissé dans demo_ws, que la recrue copie
 
 MISSION = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'demo_ws', 'src',
                        'demo_mission', 'demo_mission', 'mission.py')
@@ -29,15 +31,20 @@ class MissionStateStub:
         self.time_in_state = 0.0
 
 
-class GeoPoseStampedStub:
+class GlobalPositionTargetStub:
+    FRAME_GLOBAL_REL_ALT = 6
+    IGNORE_VX, IGNORE_VY, IGNORE_VZ = 8, 16, 32
+    IGNORE_AFX, IGNORE_AFY, IGNORE_AFZ = 64, 128, 256
+    IGNORE_YAW, IGNORE_YAW_RATE = 1024, 2048
+
     def __init__(self):
-        position = types.SimpleNamespace(latitude=0.0, longitude=0.0, altitude=0.0)
-        orientation = types.SimpleNamespace(w=0.0)
         self.header = types.SimpleNamespace(stamp=None)
-        self.pose = types.SimpleNamespace(position=position, orientation=orientation)
+        self.coordinate_frame = 0
+        self.type_mask = 0
+        self.latitude = self.longitude = self.altitude = 0.0
 
 
-# --- Horloge et noeud factices : juste ce que mission.py utilise ---
+# --- Horloge et node factices : juste ce que mission.py utilise ---
 
 class FakeDuration:
     def __init__(self, nanoseconds):
@@ -77,6 +84,12 @@ class FakeNode:
     def create_publisher(self, *args, **kwargs):
         return types.SimpleNamespace(publish=lambda msg: None)
 
+    def create_client(self, *args, **kwargs):
+        node = self
+        node.requests = []
+        return types.SimpleNamespace(service_is_ready=lambda: True,
+                                     call_async=lambda request: node.requests.append(request))
+
     def create_timer(self, period_s, callback):
         self.timer_period_s = period_s
         return None
@@ -97,11 +110,12 @@ stub('rclpy', init=None, spin=None, ok=lambda: False, shutdown=None)
 stub('rclpy.node', Node=FakeNode)
 stub('rclpy.qos', qos_profile_sensor_data=None)
 stub('mavros_msgs')
-stub('mavros_msgs.msg', RCIn=object, State=object)
+stub('mavros_msgs.msg', GlobalPositionTarget=GlobalPositionTargetStub, HomePosition=object,
+     RCIn=object, State=object)
+stub('mavros_msgs.srv', MessageInterval=types.SimpleNamespace(
+    Request=lambda **fields: types.SimpleNamespace(**fields)))
 stub('sensor_msgs')
 stub('sensor_msgs.msg', NavSatFix=object)
-stub('geographic_msgs')
-stub('geographic_msgs.msg', GeoPoseStamped=GeoPoseStampedStub)
 stub('custom_interfaces')
 stub('custom_interfaces.msg', MissionState=MissionStateStub)
 stub('tools', topics=stub('tools.topics', DEMO_STATE='/aeac/external/demo/state'))
@@ -112,8 +126,8 @@ spec.loader.exec_module(mission)
 
 S = MissionStateStub
 P = {'arrival_radius_m': 3.0, 'act_duration_s': 5.0}
-SITE = {'home.lat': -35.363262, 'home.lon': 149.165237, 'home.alt': 584.0,
-        'target.lat': -35.362800, 'target.lon': 149.165700, 'sim': True}
+SITE = {'target.north_m': 50.0, 'target.east_m': 40.0, 'sim': True}
+HOME = (-35.363262, 149.165237, 584.0)   # un home comme mavros le publie (lat, lon, alt)
 
 failures = []
 
@@ -132,10 +146,17 @@ def step(state, **kwargs):
     return mission.next_state(state, **base)
 
 
-def build_node(overrides=None):
+def home(node, lat, lon, alt):
+    geo = types.SimpleNamespace(latitude=lat, longitude=lon, altitude=alt)
+    node.home_callback(types.SimpleNamespace(geo=geo))
+
+
+def build_node(overrides=None, with_home=True):
     FakeNode.OVERRIDES = dict(SITE, **(overrides or {}))
     node = mission.DemoMission()
     node.armed, node.guided = True, True
+    if with_home:
+        home(node, *HOME)
     return node
 
 
@@ -174,8 +195,8 @@ node = build_node()
 node.state, node.armed = S.GOTO, False
 node.logs.clear()
 node.tick()
-check('I3 noeud : retour IDLE', node.state, S.IDLE)
-check('I3 noeud : WARN pilote',
+check('I3 node : retour IDLE', node.state, S.IDLE)
+check('I3 node : WARN pilote',
       any('Le pilote a repris la main, mission interrompue' in line for line in node.logs), True)
 
 # --- I2 : le GO doit avoir ete relache avant de compter ---
@@ -230,7 +251,7 @@ check('M7 canal hors borne : pas de GO', node.go, False)
 
 # --- M5 : position perimee (plus de 2 s) ---
 node = build_node()
-fix(node, SITE['target.lat'], SITE['target.lon'], at_s=10.0)
+fix(node, *node.target, at_s=10.0)
 check('M5 position fraiche : distance calculee', round(node.distance_to(node.target), 1), 0.0)
 node.now_s = 11.5
 check('M5 position de 1.5 s : encore valable',
@@ -241,33 +262,59 @@ node.state, node.go = S.GOTO, False
 node.tick()
 check('M5 pas d arrivee avec une position perimee', node.state, S.GOTO)
 
-# --- C1 : coordonnees de site absentes ---
-try:
-    build_node({'home.lat': 0.0, 'home.lon': 0.0})
-    check('C1 home absent : RuntimeError', 'aucune exception', 'RuntimeError')
-except RuntimeError as error:
-    check('C1 home absent : RuntimeError', str(error),
-          'Coordonnées de site absentes : vérifier config/sites/<site>.yaml')
-try:
-    build_node({'target.lat': 0.0, 'target.lon': 0.0})
-    check('C1 target absent : RuntimeError', 'aucune exception', 'RuntimeError')
-except RuntimeError as error:
-    check('C1 target absent : RuntimeError', str(error),
-          'Coordonnées de site absentes : vérifier config/sites/<site>.yaml')
+# --- Demandes de position et de home : tant qu'aucune position fraiche n'arrive, et seulement alors ---
+node = build_node(with_home=False)
+node.request_messages()
+check('position et home demandes au depart', [r.message_id for r in node.requests], [33, 242])
 
+node = build_node()
+node.request_messages()
+check('position demandee sans position recue', [r.message_id for r in node.requests], [33])
+fix(node, *node.home, at_s=20.0)
+node.request_messages()
+check('pas de nouvelle demande avec une position fraiche', len(node.requests), 1)
+node.now_s = 23.0
+node.request_messages()
+check('redemande quand la position est perimee', len(node.requests), 2)
+
+# --- C1 : cible de site absente (0, 0 du home) ---
 try:
-    build_node({'home.lat': 0.0})
-    check('C1 demi-coordonnee absente : RuntimeError', 'aucune exception', 'RuntimeError')
-except RuntimeError:
-    check('C1 demi-coordonnee absente : RuntimeError', 'RuntimeError', 'RuntimeError')
+    build_node({'target.north_m': 0.0, 'target.east_m': 0.0})
+    check('C1 cible absente : RuntimeError', 'aucune exception', 'RuntimeError')
+except RuntimeError as error:
+    check('C1 cible absente : RuntimeError', str(error),
+          'Cible de site absente : vérifier config/sites/<site>.yaml')
+check('C1 cible plein est (north_m = 0) : acceptee',
+      build_node({'target.north_m': 0.0}).offset, (0.0, 40.0))
+
+# --- Home : rien ne part tant que mavros ne l'a pas donne ---
+node = build_node(with_home=False)
+rc(node, 1100)
+rc(node, 1900)
+node.tick()
+check('sans home, le GO ne fait rien', node.state, S.IDLE)
+home(node, *HOME)
+node.tick()
+check('home recu, le GO part', node.state, S.GOTO)
+sent = []
+node.setpoint_pub = types.SimpleNamespace(publish=sent.append)
+node.tick()
+check('setpoint : altitude relative au home', (sent[-1].coordinate_frame, sent[-1].altitude), (6, 10.0))
+check('setpoint : position seule (masque 3576)', sent[-1].type_mask, 3576)
+check('setpoint : vise la cible', (sent[-1].latitude, sent[-1].longitude), node.target)
 
 # --- M6 : state_rate_hz absurde, periode bornee ---
 check('M6 state_rate_hz = 0 : periode bornee a 10 s',
       build_node({'state_rate_hz': 0.0}).timer_period_s, 10.0)
 
-# --- Distance Canberra (config/sites/sim.yaml) : home -> target ---
+# --- Cible du site sim (50 m nord, 40 m est) : distance au home ---
 distance = mission.haversine_m(-35.363262, 149.165237, -35.362800, 149.165700)
-check('haversine home->target (m)', round(distance, 1), 65.0)
+check('haversine home->target (m)', round(distance, 1), 66.3)
+node = build_node()
+check('offset_point 50 N 40 E : distance au home (m)',
+      round(mission.haversine_m(*node.home, *node.target), 1), 64.0)
+check('offset_point : la cible est au nord-est',
+      node.target[0] > HOME[0] and node.target[1] > HOME[1], True)
 check('haversine point identique', mission.haversine_m(45.5, -73.6, 45.5, -73.6), 0)
 
 print('LABELS =', mission.LABELS)

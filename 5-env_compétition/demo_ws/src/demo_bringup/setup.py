@@ -16,7 +16,7 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='Colin Cormier',
+    maintainer='Colin Rousseau',
     maintainer_email='colinc131@gmail.com',
     description='Launch file and configuration samples for the Zenith training 5 demo mission',
     license='Apache-2.0',

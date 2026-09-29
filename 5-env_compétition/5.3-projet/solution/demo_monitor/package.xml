@@ -4,7 +4,7 @@
   <name>demo_monitor</name>
   <version>1.0.0</version>
   <description>Mission monitor for Zenith training 5: publishes a JSON summary of the demo mission</description>
-  <maintainer email="colinc131@gmail.com">Colin Cormier</maintainer>
+  <maintainer email="colinc131@gmail.com">Colin Rousseau</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
