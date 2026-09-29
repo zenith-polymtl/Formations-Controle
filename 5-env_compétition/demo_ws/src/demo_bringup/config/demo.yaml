@@ -1,0 +1,17 @@
+# Réglages de la mission démo. À copier dans config/demo.yaml du repo de mission : le launch
+# file le charge depuis /aeac/config/demo.yaml. Rien de tout ceci n'est écrit dans le code du
+# node.
+demo_mission:
+  ros__parameters:
+    rc:
+      # index du GO dans RCIn.channels, donc le canal 8 de la manette (touche w du rc_simulator)
+      go_channel: 7
+      # PWM à partir duquel l'interrupteur compte comme haut (le rc_simulator envoie 1900)
+      go_pwm_min: 1700
+    # Rayon d'arrivée sur le waypoint et sur le retour, mètres. À garder plus grand que le rayon
+    # d'acceptation de l'autopilote (paramètre ArduPilot WPNAV_RADIUS, en centimètres, 200 par
+    # défaut) : 3.0 > WPNAV_RADIUS/100, sinon la mission attend une précision que l'autopilote
+    # ne cherche pas et le drone s'arrête avant d'être « arrivé ».
+    arrival_radius_m: 3.0
+    act_duration_s: 5.0      # durée de l'état ACT, secondes
+    state_rate_hz: 2.0       # fréquence du timer : publication de l'état et des setpoints
