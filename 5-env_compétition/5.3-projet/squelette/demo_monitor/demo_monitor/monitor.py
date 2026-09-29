@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """Surveillance de la mission démo : squelette du projet du document 5.3.
 
-Les imports, la classe, le paramètre, les abonnements, la publication et le timer sont en place ;
+Les imports, la classe, le paramètre, les subscribers, le publisher et le timer sont en place ;
 les six `# TODO n :` sont à écrire. Le cahier des charges, les six règles et la liste complète
 des fichiers à toucher sont dans `5.3-projet/README.md`, à lire avant d'écrire une ligne.
 
-Tel quel, ce squelette se construit, démarre et crée son topic de résumé ; il ne publie rien
-tant que le TODO 6 n'est pas écrit.
+Tel quel, ce squelette se construit, mais il ne démarre qu'avec DEMO_SUMMARY dans topics.py
+(5.3, section 2.4) ; il crée alors son topic, et n'y publie rien avant le TODO 6.
 """
 
 import json
-import math
 
 import rclpy
 from custom_interfaces.msg import MissionState
@@ -30,16 +29,15 @@ UNKNOWN_LABEL = 'INCONNU'   # tant qu'aucun MissionState n'a été reçu
 
 
 def format_summary(state, voltage, time_in_state):
-    """Le résumé publié, en JSON, sur une ligne. Aucun appel ROS : essayable dans un python3 nu.
+    """Le résumé publié, en JSON, sur une ligne. Aucun appel ROS : se vérifie seule dans python3.
 
     Exemple de sortie attendue :
         {"state": "GOTO", "voltage": 15.8, "time_in_state": 12.4}
     """
     # TODO 1 : construire le dictionnaire des trois champs et le rendre en JSON avec json.dumps.
     #   - le label d'état se lit dans LABELS, jamais écrit à la main (UNKNOWN_LABEL par défaut) ;
-    #   - une tension absente reste absente : null en JSON, pas 0.0 ; une tension non finie
-    #     (NaN) est une tension absente elle aussi, math.isfinite le dit ;
-    #   - arrondir la tension et le temps, sinon le résumé est illisible.
+    #   - une tension pas encore reçue (None) reste absente : null en JSON, pas 0.0 ;
+    #   - arrondir la tension au centième et le temps au dixième, sinon le résumé est illisible.
     return '{}'
 
 
@@ -52,11 +50,11 @@ class MissionMonitor(Node):
         self.state = None            # dernière constante de MissionState reçue
         self.time_in_state = 0.0     # telle que la mission l'a publiée
         self.voltage = None          # dernière tension reçue
-        self.battery_warned = False  # le WARN de batterie basse ne sort qu'une fois par passage
+        self.battery_warned = False  # le WARN de batterie basse ne sort qu'une fois
 
         self.create_subscription(MissionState, topics.DEMO_STATE, self.state_callback, 10)
         # mavros publie la batterie en BEST_EFFORT comme ses autres capteurs : sans
-        # qos_profile_sensor_data, l'abonnement ne correspond pas et aucune tension n'arrive.
+        # qos_profile_sensor_data, la subscription ne correspond pas et aucune tension n'arrive.
         self.create_subscription(BatteryState, MAVROS_BATTERY, self.battery_callback,
                                  qos_profile_sensor_data)
         # Le nom du topic vient de tools/topics.py, et le préfixe EXTERNAL suffit à le faire
@@ -78,20 +76,16 @@ class MissionMonitor(Node):
         pass
 
     def battery_callback(self, msg):
-        # TODO 4 : retenir la tension reçue (msg.voltage, en volts). Attention : une tension
-        #   non mesurée vaut NaN, pas 0 (sensor_msgs/BatteryState met NaN dans les champs que
-        #   l'autopilote ne renseigne pas), et un message pareil est à ignorer.
-        # TODO 5 : sous self.battery_warn_v, un WARN et un seul, tant que la tension n'est pas
-        #   remontée franchement au-dessus du seuil (self.battery_warned sert à cela, et une
-        #   petite marge évite une ligne par message si la tension oscille autour du seuil).
-        #   Aucun log si la tension est normale : le journal ne reçoit que des événements.
+        # TODO 4 : retenir la tension reçue (msg.voltage, en volts).
+        # TODO 5 : sous self.battery_warn_v, un WARN et un seul (self.battery_warned sert à
+        #   cela). Aucun log si la tension est normale : le journal ne reçoit que des événements.
         pass
 
     # --- Le timer : la seule publication ---
 
     def tick(self):
         # TODO 6 : remplir un std_msgs/String avec format_summary(...) et le publier sur
-        #   self.summary_pub. Rien d'autre ne publie dans ce node.
+        #   self.summary_pub. Rien d'autre ne publie dans cette node.
         pass
 
 

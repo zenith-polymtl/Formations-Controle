@@ -11,4 +11,4 @@ Objectifs, par document :
 
 Annexes : [fiche-controleurs.md](fiche-controleurs.md) (messages de log et paramètres de chaque contrôleur), [glossaire.md](glossaire.md), [logs/README.md](logs/README.md) (les logs de travail), [solutions/](solutions/) (le journal complet du vol 1).
 
-Les rosbags (enregistrement et relecture côté ROS 2) ne sont pas traités ici : ils relèvent de la formation 3.
+Les rosbags (enregistrement et relecture côté ROS 2) ne sont pas traités ici : l'enregistrement est vu en formation 5 (5.2, section 4, `make bag`).

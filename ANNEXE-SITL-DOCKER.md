@@ -62,4 +62,5 @@ Deux autres points à confirmer sur une vraie machine : que l'image `ardupilot/a
 
 - ArduPilot, *SITL Simulator*, <https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html> : les options de `sim_vehicle.py` (lieu de départ `-L`, vitesse `--speedup`, type de véhicule).
 - ArduPilot, *Using SITL with Docker*, <https://ardupilot.org/dev/docs/building-setup-linux.html> : le Dockerfile officiel dont `sitl/Dockerfile` s'inspire.
-- Le dépôt aeac-2026 fait la même chose avec `make mavros-sim`, sur un SITL lancé à côté : La formation 4 y revient.
+- Le dépôt aeac-2026 fait la même chose avec `make mavros-sim`, sur un SITL lancé à côté : la formation 4, à venir, y reviendra.
+- Dans le repo de mission de la formation 5, la simulation se lance avec `make sim C=<mission>`. Sans réglage, mavros y vise `tcp://127.0.0.1:5762` (`SITL=mp`), le port que ce SITL expose, donc il devrait le trouver comme il trouve Mission Planner (pas encore essayé). Pour un SITL sur un autre port ou une autre machine : `make sim C=<mission> SITL=<URL mavros>`, par exemple `SITL=tcp://<adresse>:5762`.

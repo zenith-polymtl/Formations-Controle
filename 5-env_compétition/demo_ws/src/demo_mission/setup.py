@@ -13,7 +13,7 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='Colin Cormier',
+    maintainer='Colin Rousseau',
     maintainer_email='colinc131@gmail.com',
     description='Demo mission node for Zenith training 5: a four state machine over mavros',
     license='Apache-2.0',

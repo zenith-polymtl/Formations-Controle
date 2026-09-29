@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """Surveillance de la mission démo : solution du projet du document 5.3.
 
-Le node `mission_monitor` regarde et ne touche à rien : il s'abonne à l'état de la mission et à
-la batterie de mavros, et publie une fois par seconde un résumé JSON sur un topic externe.
+La node `mission_monitor` regarde et ne touche à rien : elle écoute l'état de la mission et la
+batterie de mavros, et publie une fois par seconde un résumé JSON sur un topic externe.
 
 Les six règles que ce fichier illustre sont dans `5.3-projet/README.md` ; la ligne qui respecte
 chacune est annotée ci-dessous.
 """
 
 import json
-import math
 
 import rclpy
 from custom_interfaces.msg import MissionState
@@ -29,20 +28,15 @@ LABELS = {MissionState.IDLE: 'IDLE', MissionState.GOTO: 'GOTO',
           MissionState.ACT: 'ACT', MissionState.RETURN: 'RETURN'}
 UNKNOWN_LABEL = 'INCONNU'   # tant qu'aucun MissionState n'a été reçu
 
-# Marge de réarmement du WARN batterie, en volts : la tension doit repasser franchement
-# au-dessus du seuil avant qu'un second avertissement soit permis.
-BATTERY_REARM_MARGIN_V = 0.3
-
 
 def format_summary(state, voltage, time_in_state):
-    """Le résumé publié, en JSON, sur une ligne. Aucun appel ROS : essayable dans un python3 nu.
-    Une tension absente ou non finie (NaN) devient `null` : une batterie qu'on n'a pas mesurée
-    n'est pas une batterie à zéro volt, et `NaN` n'est pas du JSON."""
-    voltage_ok = voltage is not None and math.isfinite(float(voltage))
+    """Le résumé publié, en JSON, sur une ligne. Aucun appel ROS : se vérifie seule dans python3.
+    Une tension pas encore reçue (None) devient `null` : une batterie qu'on n'a pas mesurée
+    n'est pas une batterie à zéro volt."""
     return json.dumps({
         'state': LABELS.get(state, UNKNOWN_LABEL),
-        'voltage': round(float(voltage), 2) if voltage_ok else None,
-        'time_in_state': round(float(time_in_state), 1),
+        'voltage': round(voltage, 2) if voltage is not None else None,
+        'time_in_state': round(time_in_state, 1),
     })
 
 
@@ -55,11 +49,11 @@ class MissionMonitor(Node):
         self.state = None            # dernière constante de MissionState reçue
         self.time_in_state = 0.0     # telle que la mission l'a publiée
         self.voltage = None          # dernière tension reçue
-        self.battery_warned = False  # le WARN de batterie basse ne sort qu'une fois par passage
+        self.battery_warned = False  # le WARN de batterie basse ne sort qu'une fois
 
         self.create_subscription(MissionState, topics.DEMO_STATE, self.state_callback, 10)
         # mavros publie la batterie en BEST_EFFORT comme ses autres capteurs : sans
-        # qos_profile_sensor_data, l'abonnement ne correspond pas et aucune tension n'arrive.
+        # qos_profile_sensor_data, la subscription ne correspond pas et aucune tension n'arrive.
         self.create_subscription(BatteryState, MAVROS_BATTERY, self.battery_callback,
                                  qos_profile_sensor_data)
         # Règle 1 : le nom du topic vient de tools/topics.py, jamais d'un littéral.
@@ -82,26 +76,16 @@ class MissionMonitor(Node):
                                    f'{LABELS.get(msg.state, UNKNOWN_LABEL)}')
         self.state = msg.state
         # Le temps dans l'état est calculé par la mission : le moniteur le republie tel quel.
-        self.time_in_state = float(msg.time_in_state)
+        self.time_in_state = msg.time_in_state
 
     def battery_callback(self, msg):
-        voltage = float(msg.voltage)
-        # sensor_msgs/BatteryState met NaN dans les champs que l'autopilote ne mesure pas : une
-        # tension non finie n'est pas une tension basse, c'est une absence de mesure.
-        if not math.isfinite(voltage):
-            return
-        self.voltage = voltage
-        if self.voltage < self.battery_warn_v:
-            if not self.battery_warned:
-                # Règle 6 : le passage sous le seuil est un événement, donc un WARN, une seule
-                # fois. Un WARN à chaque message noierait le journal et ne dirait rien de plus.
-                self.get_logger().warn(f'Batterie sous le seuil : {self.voltage:.2f} V '
-                                       f'(seuil {self.battery_warn_v:.1f} V)')
-                self.battery_warned = True
-        elif self.voltage > self.battery_warn_v + BATTERY_REARM_MARGIN_V:
-            # Réarmé seulement quand la tension remonte franchement au-dessus du seuil : une
-            # batterie qui oscille autour du seuil ne doit pas produire une ligne par message.
-            self.battery_warned = False
+        self.voltage = msg.voltage   # en volts
+        if self.voltage < self.battery_warn_v and not self.battery_warned:
+            # Règle 6 : le passage sous le seuil est un événement, donc un WARN, une seule
+            # fois. Un WARN à chaque message noierait le journal et ne dirait rien de plus.
+            self.get_logger().warn(f'Batterie sous le seuil : {self.voltage:.2f} V '
+                                   f'(seuil {self.battery_warn_v:.1f} V)')
+            self.battery_warned = True
 
     # --- Le timer : la seule publication ---
 

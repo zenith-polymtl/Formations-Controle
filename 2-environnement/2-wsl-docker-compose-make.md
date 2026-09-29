@@ -633,7 +633,7 @@ Dans le shell donné par `make shell`, ROS 2 est déjà sourcé, et si mavros ro
 > [!TIP]
 > **Tu as réussi si**, depuis un état vide (`make down`, `docker ps` vide), `make listen-status` affiche `connected: true` en une seule commande.
 
-**Le vrai Makefile.** Celui d'aeac-2026 est bâti sur exactement ce squelette, en une cinquantaine de cibles (`C=` choisit la mission, `make mavros-sim` est notre `listen-status`, `make help` liste tout). Vous n'aurez pas à l'écrire : vous aurez à le lire et à vous en servir, et la formation 5 le parcourt en détail.
+**Le vrai Makefile.** Celui d'aeac-2026 est bâti sur exactement ce squelette, en une cinquantaine de cibles (`C=` choisit la mission, `make mavros-sim` est notre `listen-status`, `make help` liste tout). Vous n'aurez pas à l'écrire : vous aurez à le lire et à vous en servir. La formation 5 parcourt en détail celui de `mission-template`, le successeur d'aeac-2026, bâti sur le même squelette (la simulation y devient `make sim`).
 
 ### 2.9 - Défi la formation 2
 

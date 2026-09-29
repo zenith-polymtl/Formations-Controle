@@ -4,7 +4,7 @@
   <name>demo_bringup</name>
   <version>1.0.0</version>
   <description>Launch file and configuration samples for the Zenith training 5 demo mission</description>
-  <maintainer email="colinc131@gmail.com">Colin Cormier</maintainer>
+  <maintainer email="colinc131@gmail.com">Colin Rousseau</maintainer>
   <license>Apache-2.0</license>
 
   <exec_depend>ros2launch</exec_depend>

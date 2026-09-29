@@ -115,7 +115,7 @@ Puis écrire une ligne dans `notes.txt` avec `echo "premier essai" > b0/notes.tx
 
 Git garde l'historique d'un dossier de code : chaque *commit* est une photo du dossier à un instant, avec un message. GitHub héberge ces dossiers (les *dépôts*) pour les partager. Tout le code de Zenith est sur GitHub ; la formation aussi.
 
-Il faut un compte GitHub (<https://github.com/signup>, gratuit). Puis, une fois pour toutes, dire à Git qui vous êtes :
+Il faut un compte GitHub (<https://github.com/signup>, gratuit). Donnez votre nom d'utilisateur à un lead : il vous ajoute à l'organisation `zenith-polymtl` (équipe contrôle), ce qui est nécessaire avant la formation 5 pour faire un push de vos branches. Puis, une fois pour toutes, dire à Git qui vous êtes :
 
 ```bash
 git config --global user.name "Prénom Nom"

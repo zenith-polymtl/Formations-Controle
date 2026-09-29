@@ -1,0 +1,24 @@
+La dépendance que le projet ajoute au package.xml de demo_bringup. S'applique depuis la racine
+du clone du repo de mission, où demo_ws a été copié dans workspaces/, avec
+git apply package.xml.diff. Elle va avec mission.launch.py.diff : c'est le même changement vu
+du côté du contrat.
+
+Pourquoi : le launch file de demo_bringup lance maintenant une node de demo_monitor, donc
+demo_bringup en dépend, et package.xml est le contrat (ARCHITECTURE.md, « Règles de code ») :
+toute dépendance y est déclarée. exec_depend et non depend, parce que demo_bringup n'importe
+rien de demo_monitor : il en a besoin à l'exécution seulement, comme de demo_mission. Sans
+cette ligne, tout marche dans le workspace de la démo, où les deux packages sont côte à côte ;
+c'est l'installation de demo_bringup seul, ailleurs, qui casserait.
+
+diff --git a/workspaces/demo_ws/src/demo_bringup/package.xml b/workspaces/demo_ws/src/demo_bringup/package.xml
+index c9d5a49..9af73fc 100644
+--- a/workspaces/demo_ws/src/demo_bringup/package.xml
++++ b/workspaces/demo_ws/src/demo_bringup/package.xml
+@@ -9,6 +9,7 @@
+ 
+   <exec_depend>ros2launch</exec_depend>
+   <exec_depend>demo_mission</exec_depend>
++  <exec_depend>demo_monitor</exec_depend>
+ 
+   <export>
+     <build_type>ament_python</build_type>

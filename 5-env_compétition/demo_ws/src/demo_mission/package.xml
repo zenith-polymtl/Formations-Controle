@@ -4,13 +4,12 @@
   <name>demo_mission</name>
   <version>1.0.0</version>
   <description>Demo mission node for Zenith training 5: a four state machine over mavros</description>
-  <maintainer email="colinc131@gmail.com">Colin Cormier</maintainer>
+  <maintainer email="colinc131@gmail.com">Colin Rousseau</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
   <depend>mavros_msgs</depend>
-  <depend>geographic_msgs</depend>
   <depend>tools</depend>
   <depend>custom_interfaces</depend>
 

@@ -1,9 +1,9 @@
-"""Launch file de la mission démo : un node, deux fichiers de configuration du repo.
+"""Launch file de la mission démo : une node, deux fichiers de configuration du repo.
 
 `config/demo.yaml` et `config/sites/<site>.yaml` sont tous deux au format paramètres ROS 2 :
-ils se passent tels quels au node, sans lecture YAML ici. Les clés imbriquées du site
-(`home: {lat: ...}`) arrivent au node sous les noms `home.lat`, `home.lon`, `home.alt`,
-`target.lat`, `target.lon` et `altitude_agl`.
+ils se passent tels quels à la node, sans lecture YAML ici. Les clés imbriquées du site
+(`target: {north_m: ...}`) arrivent à la node sous les noms `target.north_m`, `target.east_m`
+et `altitude_agl`.
 """
 
 from launch import LaunchDescription
