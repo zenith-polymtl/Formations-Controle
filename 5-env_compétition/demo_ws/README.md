@@ -16,8 +16,8 @@ make build C=demo
 ```
 
 `src/tools`, `src/custom_interfaces` et `src/sim_mocks` sont des liens vers `packages/` livrés
-avec le workspace : il n'y a pas de `make link` à faire. Sous Windows ce sont des fichiers texte
-qui contiennent le chemin visé, c'est normal, le travail se fait sous WSL.
+avec le workspace : il n'y a pas de `make link` à faire. Copiés depuis Windows, ils arrivent en
+fichiers texte qui contiennent le chemin visé : `make build` les recrée en liens.
 
 Ensuite, avec le SITL lancé dans Mission Planner :
 
