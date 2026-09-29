@@ -32,7 +32,7 @@ Le résumé dit ce que le moniteur a vu. Il ne dit pas que la mission va bien : 
 
 ## Les six règles
 
-La section 2.3 du document 5.3 détaille chaque règle, avec la ligne du fichier qui la respecte. Voici seulement la liste :
+La section 2.3 du document 5.3 détaille chaque règle, avec l'endroit du fichier qui la respecte. Voici seulement la liste :
 
 1. Le nom du topic vient de `topics.py`.
 2. L'état se compare à une constante de `MissionState`.
