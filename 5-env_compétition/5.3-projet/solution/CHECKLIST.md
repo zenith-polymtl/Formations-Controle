@@ -86,7 +86,7 @@ combien de lignes sortent ? » La bonne réponse est : une seule, grâce à `bat
       sous `demo_mission:` au lieu d'une section à son nom, la node tourne quand même et rien
       n'échoue. Demandez-lui de lancer `ros2 param get /mission_monitor battery_warn_v` : elle
       constatera que le seuil est resté à la valeur par défaut du code. C'est la panne la plus discrète du projet, et
-      la raison d'être du cinquième fichier à toucher.
+      la raison d'être du cinquième point de contact, « la config ».
 - [ ] La mise en forme du résumé est dans une fonction de module, sans appel ROS, et la recrue
       l'a essayée seule dans `python3`, dans `make shell` (5.3, section 3.4).
 - [ ] `voltage` absent vaut `null` et non `0.0`, et la recrue sait dire pourquoi c'est
