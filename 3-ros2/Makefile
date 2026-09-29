@@ -29,9 +29,10 @@ COMPOSE      := docker compose -f $(COMPOSE_FILE)
 # donc rien n'est sourcé automatiquement. Ajouts la formation 3, dans l'ordre : le workspace
 # b3_tools_ws (bâti dans l'image), puis example_ws s'il a déjà été bâti avec
 # colcon. Le vrai dépôt fait pareil (source install/setup.bash dans sa cible shell).
+# Le daemon ros2 est démarré d'avance : en WSL Mirrored, sans lui, ros2 topic attend deux minutes puis échoue.
 TOOLS_SETUP := /b3_tools_ws/install/setup.bash
 WS_SETUP    := /example_ws/install/setup.bash
-ROS_SETUP   := source /opt/ros/humble/setup.bash; source $(TOOLS_SETUP); if [ -f $(WS_SETUP) ]; then source $(WS_SETUP); fi
+ROS_SETUP   := source /opt/ros/humble/setup.bash; source $(TOOLS_SETUP); if [ -f $(WS_SETUP) ]; then source $(WS_SETUP); fi; ros2 daemon start > /dev/null 2>&1
 
 # ===== Cycle de vie =====
 build: ## Bâtit l'image
