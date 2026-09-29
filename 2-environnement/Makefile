@@ -25,7 +25,8 @@ COMPOSE      := docker compose -f $(COMPOSE_FILE)
 
 # Rend ros2 utilisable : docker exec ne passe pas par l'entrypoint de l'image ROS,
 # donc rien n'est sourcé automatiquement. Le vrai dépôt fait exactement pareil.
-ROS_SETUP := source /opt/ros/humble/setup.bash
+# Le daemon ros2 est démarré d'avance : en WSL Mirrored, sans lui, ros2 topic attend deux minutes puis échoue.
+ROS_SETUP := source /opt/ros/humble/setup.bash; ros2 daemon start > /dev/null 2>&1
 
 # ===== Cycle de vie =====
 build: ## Bâtit l'image
