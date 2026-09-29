@@ -1,7 +1,7 @@
 # CHECKLIST.md : relecture de la PR `mission_monitor`
 
 Cette grille est pour le lead. Elle suit les six règles, dans l'ordre où elles apparaissent dans
-le diff, puis le reste de la PR. La PR sera de toute façon fermée sans merge (5.3, section 4) :
+le diff, puis le reste de la PR. La PR sera de toute façon fermée sans merge :
 une case vide est un sujet de conversation, pas un refus.
 
 ## 1. Le nom du topic vient de `topics.py`
