@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carte du parcours Contrôle</title>
+<meta name="description" content="Carte d'entrée du parcours de formation du département Contrôle de Zenith Polytechnique : le domaine, les mots-clés, l'ordre des formations et leurs prérequis.">
+<style>
+:root {
+  --encre: #1b2027;
+  --doux: #555d68;
+  --pale: #8a919b;
+  --trait: #cfd4da;
+  --fond: #f7f7f4;
+  --papier: #ffffff;
+  --accent: #1b2027;
+
+  --bases: #5b6470;
+  --drone: #1d5fa8;
+  --sol: #0b7a72;
+  --poste: #6a4bb0;
+  --mission: #c0490f;
+  --sim: #3b7a1c;
+  --reseau: #a3306f;
+  --embarque: #876010;
+  --tuning: #b3261e;
+  --vision: #6f7782;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font: 15px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+
+.page { max-width: 1880px; margin: 0 auto; padding: 18px 28px 40px; }
+
+/* En-tête */
+.tete {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 40px;
+  align-items: end;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--encre);
+}
+.surtitre { margin: 0; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--doux); }
+h1 { margin: 2px 0 2px; font-size: 30px; line-height: 1.15; letter-spacing: -.01em; }
+.question { margin: 0; font-size: 16px; color: var(--doux); }
+.question b { color: var(--encre); font-weight: 600; }
+.mode {
+  margin: 0; padding: 0; list-style: none;
+  font-size: 13.5px; color: var(--doux);
+  display: grid; gap: 2px;
+}
+.mode li { display: grid; grid-template-columns: 18px 1fr; }
+.mode b { color: var(--encre); }
+
+/* Grille principale */
+.grille {
+  display: grid;
+  grid-template-columns: minmax(0, 47fr) minmax(0, 53fr);
+  gap: 32px;
+  margin-top: 14px;
+}
+h2 {
+  margin: 0 0 4px; font-size: 19px; line-height: 1.2;
+  display: flex; align-items: baseline; gap: 10px;
+}
+h2 .lettre {
+  display: inline-block; min-width: 24px; text-align: center;
+  font-size: 14px; font-weight: 700; color: var(--papier); background: var(--encre);
+  padding: 1px 6px; border-radius: 2px;
+}
+.aide { margin: 0 0 8px; font-size: 13.5px; color: var(--doux); }
+
+/* Mots-clés */
+.terme {
+  display: inline; padding: 0; margin: 0; border: 0; background: none; cursor: help;
+  border-bottom: 2px solid var(--c, var(--pale));
+  line-height: 1.25; white-space: nowrap;
+}
+.terme:hover, .terme:focus-visible, .terme.ouvert { background: color-mix(in srgb, var(--c) 14%, transparent); outline: none; }
+.terme.eteint { color: var(--pale); border-bottom-color: var(--trait); }
+.termes { font-size: 13.5px; }
+.termes .tw { white-space: nowrap; }
+.termes .sep { color: var(--pale); margin: 0 1px 0 5px; }
+
+/* Carte conceptuelle */
+.cmap-cadre { position: relative; width: 100%; }
+.cmap { position: absolute; left: 0; top: 0; width: 900px; height: 610px; transform-origin: 0 0; }
+.cmap svg { position: absolute; inset: 0; width: 900px; height: 610px; overflow: visible; pointer-events: none; }
+.noeud {
+  position: absolute;
+  background: var(--papier);
+  border: 1.5px solid var(--c);
+  border-top-width: 5px;
+  padding: 7px 10px 8px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.noeud.hors { border-style: dashed; border-top-width: 1.5px; border-top-style: dashed; background: transparent; }
+.noeud h3 { margin: 0; font-size: 15.5px; line-height: 1.2; color: var(--c); }
+.noeud p { margin: 2px 0 5px; font-size: 12.5px; line-height: 1.3; color: var(--doux); }
+.noeud .termes { font-size: 13px; line-height: 1.7; }
+.noeud.eteint { opacity: .28; }
+.noeud.actif { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 30%, transparent); }
+.bases-barre {
+  position: absolute; left: 0; width: 900px;
+  border-top: 1.5px solid var(--bases);
+  padding: 7px 0 0;
+  font-size: 13px; color: var(--doux);
+  display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap;
+  cursor: pointer;
+}
+.bases-barre h3 { margin: 0; font-size: 15px; color: var(--bases); }
+.bases-barre.eteint { opacity: .28; }
+.lien-label { font-size: 12.5px; fill: var(--doux); font-style: italic; }
+.lien-trait { stroke: #8f969f; stroke-width: 1.4; fill: none; }
+.lien-trait.hors { stroke-dasharray: 5 4; }
+.cmap .eteint-lien { opacity: .2; }
+.cmap-liste { display: none; }
+
+/* Filtres (et légende des couleurs) */
+.filtres { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 6px; align-items: center; font-size: 13px; }
+.filtres > span { color: var(--doux); margin-right: 2px; }
+.filtre {
+  border: 1.5px solid var(--c, var(--encre)); background: var(--papier);
+  padding: 2px 9px; border-radius: 2px; cursor: pointer; font-size: 13px;
+}
+.filtre[aria-pressed="true"] { background: var(--c, var(--encre)); color: #fff; }
+
+/* Parcours */
+.parcours-tete { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.legende { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--doux); margin: 0; padding: 0; list-style: none; }
+.legende li { display: flex; align-items: center; gap: 5px; }
+.rendu { font-size: 13.5px; display: flex; gap: 6px; align-items: center; }
+.rendu select { font: inherit; font-size: 13.5px; padding: 2px 4px; border: 1.5px solid var(--encre); border-radius: 2px; background: var(--papier); }
+
+.pastille {
+  width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--encre); display: inline-block; flex: none;
+}
+.pastille.publiee { background: var(--encre); }
+.pastille.jet { background: linear-gradient(90deg, var(--encre) 50%, var(--papier) 50%); }
+.pastille.avenir { background: var(--papier); }
+.pastille.hors { background: transparent; border-style: dashed; border-color: var(--pale); }
+
+.ligne { position: relative; margin: 0; padding: 0; list-style: none; }
+.ligne svg.raccourci { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.station {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) minmax(0, 0.95fr);
+  gap: 0 16px;
+  padding: 5px 0 5px;
+  border-bottom: 1px solid #e6e8eb;
+  cursor: pointer;
+}
+.station::before {  /* le rail */
+  content: ""; position: absolute; left: 31px; top: 0; bottom: 0; width: 3px; background: var(--encre);
+}
+.ligne > .station:first-child::before { top: 22px; }
+.ligne > .station:last-child::before { bottom: auto; height: 22px; }
+.rond {
+  position: relative; z-index: 1; justify-self: center;
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 3px solid var(--encre); background: var(--encre); color: #fff;
+  display: grid; place-items: center; font-weight: 700; font-size: 16px;
+}
+/* premier jet : anneau à moitié plein, chiffre sur un disque blanc */
+.station.jet .rond { background: radial-gradient(circle, var(--papier) 0 10px, transparent 11px), linear-gradient(90deg, var(--encre) 50%, var(--papier) 50%); color: var(--encre); }
+.station.avenir .rond { background: var(--papier); color: var(--encre); }
+.station.hors .rond { background: var(--fond); color: var(--doux); border-style: dashed; border-color: var(--pale); }
+.station .corps h3 { margin: 0; font-size: 16px; line-height: 1.25; display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; }
+.etat { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--doux); }
+.station.avenir .etat, .station.jet .etat { color: #9a5b00; }
+.station .corps p { margin: 1px 0 0; font-size: 13.5px; color: var(--doux); line-height: 1.35; }
+.sous { margin: 3px 0 0; font-size: 13.5px; display: flex; flex-wrap: wrap; gap: 0 12px; }
+.sous a, .ouvrir { text-decoration: none; border-bottom: 1px solid var(--trait); }
+.sous a:hover, .ouvrir:hover { border-bottom-color: var(--encre); }
+.sous .n { font-weight: 700; }
+.ouvrir { font-size: 13.5px; white-space: nowrap; }
+.station .cote { font-size: 13px; color: var(--doux); padding-top: 2px; }
+.station .cote .termes { display: block; color: var(--encre); margin-bottom: 3px; line-height: 1.75; }
+.avant { font-size: 12.5px; }
+.avant b { color: var(--encre); font-weight: 600; }
+.note { font-size: 12.5px; color: #8a4f00; }
+.tag-suivant { display: none; font-size: 12px; font-weight: 700; color: #fff; background: #0b7a72; padding: 0 6px; border-radius: 2px; }
+.station.suivante .tag-suivant { display: inline-block; }
+.station.fait .rond::after {
+  content: "✓"; position: absolute; right: -9px; top: -7px; width: 18px; height: 18px; border-radius: 50%;
+  background: #0b7a72; color: #fff; font-size: 12px; display: grid; place-items: center; border: 2px solid var(--fond);
+}
+.station.eteint { opacity: .3; }
+.station.prereq { background: #fff7e0; }
+.station.cible { background: #e9f3f2; }
+.sous a.eteint { opacity: .3; }
+
+.raccourci { font-size: 12px; font-weight: 600; color: #fff; background: #0b7a72; padding: 0 5px; border-radius: 2px; white-space: nowrap; }
+.resume { margin-top: 14px; border-top: 1.5px solid var(--encre); padding-top: 8px; }
+.resume h3 { margin: 0 0 4px; font-size: 16px; }
+.resume ol { margin: 0; padding-left: 20px; font-size: 14px; }
+.resume li { margin: 2px 0; }
+.resume .chemin { font-weight: 700; white-space: nowrap; }
+.branches-titre { margin: 8px 0 0; font-size: 13px; font-weight: 600; color: var(--doux); text-transform: uppercase; letter-spacing: .03em; }
+.branches .station::before { background: none; border-left: 3px dashed var(--pale); width: 0; }
+@media (min-width: 1101px) {
+  .branches { display: grid; grid-template-columns: 1.25fr 1fr; gap: 0 18px; }
+  .branches .station { grid-template-columns: 64px minmax(0, 1fr); }
+  .branches .station .cote { grid-column: 2; padding-top: 0; }
+  .branches > .station:last-child::before, .branches > .station:first-child::before { top: 22px; bottom: auto; height: 22px; }
+}
+
+.bandeau-focus {
+  display: none; margin: 0 0 6px; padding: 5px 10px; font-size: 13.5px;
+  background: #fff7e0; border-left: 4px solid #d99a00;
+}
+.bandeau-focus.visible { display: block; }
+.bandeau-focus button { border: 0; background: none; text-decoration: underline; cursor: pointer; padding: 0 0 0 6px; color: var(--doux); }
+
+/* Définition au survol */
+#bulle {
+  position: fixed; z-index: 20; max-width: 340px;
+  background: var(--papier); color: var(--encre);
+  border: 1.5px solid var(--encre); border-left: 6px solid var(--c, var(--encre));
+  padding: 8px 11px; font-size: 14px; line-height: 1.4;
+  display: none;
+}
+#bulle.visible { display: block; }
+#bulle .mot { font-weight: 700; }
+#bulle .div { font-size: 12px; color: var(--c); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+#bulle .vu { margin-top: 4px; font-size: 12.5px; color: var(--doux); }
+
+/* Lexique */
+#lexique { margin-top: 34px; padding-top: 14px; border-top: 2px solid var(--encre); }
+.lex-tete { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; justify-content: space-between; }
+.lex-tete input { font: inherit; padding: 5px 9px; border: 1.5px solid var(--encre); border-radius: 2px; min-width: 260px; background: var(--papier); }
+.lex-grille { columns: 3 320px; column-gap: 34px; margin-top: 10px; }
+.lex-groupe { break-inside: avoid; margin: 0 0 16px; }
+.lex-groupe h3 { margin: 0 0 4px; font-size: 15px; color: var(--c); border-bottom: 1.5px solid var(--c); padding-bottom: 2px; }
+.lex-groupe dl { margin: 0; }
+.lex-groupe dt { font-weight: 700; margin-top: 6px; }
+.lex-groupe dd { margin: 0; font-size: 14px; }
+.lex-groupe dd .vu { color: var(--doux); font-size: 12.5px; }
+.lex-groupe .cache { display: none; }
+
+footer { margin-top: 26px; font-size: 12.5px; color: var(--doux); border-top: 1px solid var(--trait); padding-top: 10px; }
+footer p { margin: 2px 0; }
+
+/* Cellulaire et tablette */
+@media (max-width: 1100px) {
+  .grille { grid-template-columns: minmax(0, 1fr); }
+  .tete { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .page { padding: 12px 16px 30px; }
+  h1 { font-size: 24px; }
+  .question { font-size: 15px; }
+  .cmap-cadre { display: none; }
+  .cmap-liste { display: block; margin: 0; padding: 0; list-style: none; }
+  .cmap-liste li {
+    border: 1.5px solid var(--c); border-top-width: 5px; background: var(--papier);
+    padding: 7px 10px; margin-bottom: 8px; border-radius: 2px;
+  }
+  .cmap-liste li.hors { border-style: dashed; border-top-width: 1.5px; background: transparent; }
+  .cmap-liste h3 { margin: 0; font-size: 15.5px; color: var(--c); }
+  .cmap-liste p { margin: 2px 0 4px; font-size: 13.5px; color: var(--doux); }
+  .cmap-liste .rel { font-size: 13px; color: var(--doux); font-style: italic; margin-top: 3px; }
+  .cmap-liste .termes { line-height: 1.8; }
+  .station { grid-template-columns: 46px minmax(0, 1fr); }
+  .station::before { left: 21px; }
+  .rond { width: 32px; height: 32px; font-size: 14px; }
+  .station .cote { grid-column: 2; }
+  #bulle { left: 8px !important; right: 8px; bottom: 8px; top: auto !important; max-width: none; }
+}
+/* Mode diapo (carte-controle.html#diapo) : la capture 16:9 de la présentation */
+.diapo #lexique, .diapo footer, .diapo .rendu, .diapo .web-seul { display: none; }
+.mode li.diapo-seul { display: none; }
+.diapo .mode li.diapo-seul { display: grid; }
+@media print {
+  .rendu, .filtres, .lex-tete input { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="tete">
+  <div>
+    <p class="surtitre">Zenith Polytechnique · Département Contrôle</p>
+    <h1>La carte du parcours Contrôle</h1>
+    <p class="question">La question de départ : <b>comment le code de l'équipe fait-il voler un drone tout seul, et dans quel ordre l'apprendre ?</b></p>
+  </div>
+  <ol class="mode">
+    <li><b>A</b><span><b>Le domaine</b> : ses parties et comment elles se parlent.</span></li>
+    <li><b>B</b><span><b>Le parcours</b> : les formations, dans l'ordre.</span></li>
+    <li class="web-seul"><b>?</b><span>Un mot souligné : <b>survole-le ou touche-le</b> pour sa définition.</span></li>
+    <li class="diapo-seul"><b>?</b><span>Un mot souligné : sa définition est dans <b>la version web</b> (survol et lexique).</span></li>
+  </ol>
+</header>
+
+<main class="grille">
+  <section id="domaine" aria-labelledby="titre-domaine">
+    <h2 id="titre-domaine"><span class="lettre">A</span>Le domaine en une image</h2>
+    <p class="aide">Chaque flèche se lit comme une phrase : « La station sol surveille et commande (MAVLink) le drone ». Clique une partie pour filtrer le parcours.</p>
+    <div class="cmap-cadre"><div class="cmap" id="cmap"></div></div>
+    <ul class="cmap-liste" id="cmap-liste"></ul>
+    <div class="filtres" id="filtres"><span>Filtrer par partie :</span></div>
+    <div class="resume">
+      <h3>Par où commencer ?</h3>
+      <ol>
+        <li>Fais l'autodiagnostic de la <b>0</b> : huit « oui » et tu passes directement à la 1.</li>
+        <li>Le plus court chemin vers le code de compétition : <span class="chemin">0 → 1 → 2 → 3.1 → 3.2 → 4</span>, environ 15 h.</li>
+        <li>Tout ce qui est publié (0 à 4) : environ 19 h. La 9 se fait à côté, dès la 1.</li>
+        <li>Les formations sont sur GitHub, dépôt <b>zenith-polymtl/Formations-Controle</b> : clique « Ouvrir ↗ » ou un numéro (3.1, 4.2…).</li>
+        <li>Bloqué ? Discord de Zenith, salon Contrôle, fil « Formations et Questions ». Colle l'erreur exacte.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="parcours" aria-labelledby="titre-parcours">
+    <h2 id="titre-parcours"><span class="lettre">B</span>Le parcours, dans l'ordre</h2>
+    <div class="parcours-tete">
+      <ul class="legende">
+        <li><span class="pastille publiee"></span>publiée</li>
+        <li><span class="pastille jet"></span>premier jet (utilisable, en rodage)</li>
+        <li><span class="pastille avenir"></span>à venir</li>
+        <li><span class="pastille hors"></span>hors parcours</li>
+      </ul>
+      <span class="aide" style="margin:0">Clique une formation : ses prérequis s'allument.</span>
+      <label class="rendu">Je suis rendu où ?
+        <select id="rendu"></select>
+      </label>
+    </div>
+    <div class="bandeau-focus" id="bandeau" role="status"></div>
+    <ol class="ligne" id="ligne"></ol>
+    <p class="branches-titre">Hors de la ligne principale <span style="text-transform:none;font-weight:400">(il n'y a pas de formation 8 pour l'instant)</span></p>
+    <ol class="ligne branches" id="branches"></ol>
+  </section>
+</main>
+
+<section id="lexique" aria-labelledby="titre-lexique">
+  <div class="lex-tete">
+    <h2 id="titre-lexique"><span class="lettre">C</span>Lexique : tous les mots de la carte</h2>
+    <input type="search" id="cherche" placeholder="Chercher un mot (ex. mavros)" aria-label="Chercher un mot du lexique">
+  </div>
+  <div class="lex-grille" id="lex"></div>
+</section>
+
+<footer>
+  <p>Mise à jour : 19 octobre 2026. Les formations sont dans le dépôt GitHub <a href="https://github.com/zenith-polymtl/Formations-Controle">zenith-polymtl/Formations-Controle</a>. Questions : Discord de Zenith, salon Contrôle, fil « Formations et Questions ».</p>
+  <p>Construite comme une carte conceptuelle (Novak et Cañas, 2008) : une question de départ, des parties reliées par des phrases, du général au précis.</p>
+</footer>
+
+</div>
+<div id="bulle" role="tooltip"></div>
+
+<script>
+"use strict";
+
+/* ---------- Données : à tenir à jour ici ---------- */
+
+const DEPOT = "https://github.com/zenith-polymtl/Formations-Controle/blob/main/";
+
+const PARTIES = [
+  { id: "drone",    nom: "Drone et autopilote", role: "Le contrôleur de vol et ArduPilot : ils gardent le drone stable et exécutent les ordres." },
+  { id: "sol",      nom: "Station sol",         role: "L'ordinateur au sol pour suivre le vol et le commander." },
+  { id: "mission",  nom: "Logiciel de mission", role: "Le code de l'équipe qui décide quoi faire : décoller, aller à un point, atterrir." },
+  { id: "poste",    nom: "Environnement de travail", role: "Ton ordinateur, préparé pour faire tourner le code comme sur le drone." },
+  { id: "sim",      nom: "Simulation",          role: "Un drone virtuel pour tester sans rien casser." },
+  { id: "embarque", nom: "Ordinateur de bord",  role: "La Jetson, embarquée dans le drone : elle fait tourner le code de mission." },
+  { id: "reseau",   nom: "Réseau",              role: "La liaison sans fil entre le drone et le sol." },
+  { id: "tuning",   nom: "Tuning",              role: "Les réglages qui rendent le vol stable et précis, et la lecture des vols." },
+  { id: "vision",   nom: "Vision et IA",        role: "Voir et reconnaître des cibles avec une caméra. Spécialisation hors parcours.", hors: true },
+  { id: "bases",    nom: "Bases",               role: "Les outils de tout programmeur, utilisés partout." }
+];
+
+const TERMES = {
+  terminal:   { mot: "terminal", p: "bases", def: "Fenêtre où l'on tape des commandes au lieu de cliquer. Toutes les formations s'en servent." },
+  git:        { mot: "Git", p: "bases", def: "Outil qui garde l'historique du code et permet de travailler à plusieurs sans écraser le travail des autres. Un dépôt (ou repo) est un dossier de projet suivi par Git." },
+  github:     { mot: "GitHub", p: "bases", def: "Le site où l'équipe range ses dépôts Git, dont celui des formations." },
+  python:     { mot: "Python", p: "bases", def: "Le langage de programmation de presque tout le code de mission de l'équipe." },
+  pr:         { mot: "pull request", p: "bases", def: "Demande d'ajouter tes changements au code commun ; un autre membre les relit avant de les accepter." },
+
+  ardupilot:  { mot: "ArduPilot", p: "drone", def: "Le logiciel de pilotage automatique (l'autopilote) qui tourne dans le contrôleur de vol : il garde le drone stable et exécute ses ordres." },
+  fc:         { mot: "contrôleur de vol", p: "drone", def: "Petite carte électronique à bord (une Pixhawk, par exemple) qui lit les capteurs (accéléromètres, GPS, baromètre) et commande les moteurs. ArduPilot tourne dessus." },
+  mavlink:    { mot: "MAVLink", p: "drone", def: "La langue des messages entre l'autopilote et tout le reste : station sol, ordinateur de bord, scripts." },
+  mode:       { mot: "mode de vol", p: "drone", def: "La façon dont le drone obéit. Ex. GUIDED : il suit les ordres d'un programme ; RTL : il revient à son point de départ." },
+  param:      { mot: "paramètre", p: "drone", def: "Un réglage nommé de l'autopilote (il y en a des centaines), qu'on lit et change depuis Mission Planner." },
+  failsafe:   { mot: "failsafe", p: "drone", def: "Réaction de sécurité automatique quand quelque chose va mal, par exemple revenir ou atterrir si la batterie est faible." },
+
+  mp:         { mot: "Mission Planner", p: "sol", def: "La station sol de l'équipe : un logiciel Windows pour voir le drone sur une carte, changer ses paramètres et lancer un drone simulé." },
+  log:        { mot: "log de vol", p: "tuning", def: "Le fichier que le drone enregistre pendant le vol. On le relit après pour comprendre ce qui s'est passé." },
+
+  wsl:        { mot: "WSL", p: "poste", def: "Un vrai Linux, le système qu'utilisent les robots et les serveurs, qui tourne dans Windows. C'est là que vit l'environnement de l'équipe." },
+  docker:     { mot: "Docker", p: "poste", def: "Emballe un logiciel avec tout ce dont il a besoin. La boîte qu'on lance, le conteneur, marche pareil sur tous les ordinateurs." },
+  compose:    { mot: "Docker Compose", p: "poste", def: "Un fichier qui décrit plusieurs conteneurs à démarrer ensemble, avec leurs réglages." },
+  make:       { mot: "Make", p: "poste", def: "Des raccourcis de commandes : une courte commande « make … » lance à ta place une longue commande écrite dans le Makefile." },
+
+  zenmav:     { mot: "Zenmav", p: "mission", def: "Bibliothèque Python maison de Zenith : des ordres simples au drone (décoller, aller à un point) envoyés en MAVLink. Idéale pour débuter." },
+  ros2:       { mot: "ROS 2", p: "mission", def: "Le cadre logiciel du code de mission : il est découpé en petits programmes, les nodes, qui s'échangent des messages. Les nodes sont rangées dans des packages." },
+  node:       { mot: "node", p: "mission", def: "Une node est un petit programme ROS 2 qui fait une seule tâche : lire un capteur, décider où aller, etc." },
+  topic:      { mot: "topic", p: "mission", def: "Un canal nommé : des nodes y publient des messages, d'autres les écoutent, comme une station de radio." },
+  service:    { mot: "service", p: "mission", def: "Une question et sa réponse entre deux nodes : l'une demande (armer le drone), l'autre répond (réussi ou non)." },
+  launch:     { mot: "launch file", p: "mission", def: "Un fichier qui démarre plusieurs nodes d'un coup, avec leurs paramètres." },
+  mavros:     { mot: "mavros", p: "mission", def: "La node qui traduit entre ROS 2 et MAVLink : c'est par elle que le code de mission parle à l'autopilote." },
+  rosbag:     { mot: "rosbag", p: "mission", def: "Un enregistrement des messages ROS 2 d'une session, qu'on rejoue ensuite pour analyser ou déboguer." },
+  repo:       { mot: "repo de mission", p: "mission", def: "Le dépôt Git qui contient tout le code d'une mission de compétition : les conteneurs, le Makefile et les packages (dossiers de nodes) ROS 2." },
+  submodule:  { mot: "submodule", p: "mission", def: "Un dépôt Git rangé dans un autre dépôt. Le repo de mission en assemble plusieurs." },
+
+  sitl:       { mot: "SITL", p: "sim", def: "« Software In The Loop » : le vrai ArduPilot qui tourne sur ton ordinateur et pilote un drone simulé." },
+  gazebo:     { mot: "Gazebo", p: "sim", def: "Un simulateur 3D avec de la physique, des obstacles et des capteurs (caméra), branché au SITL." },
+
+  zenoh:      { mot: "Zenoh", p: "reseau", def: "Le logiciel qui transporte les messages ROS 2 entre le drone et le sol, par la radio." },
+  ip:         { mot: "adresse IP", p: "reseau", def: "L'adresse d'un appareil sur un réseau, comme 192.168.1.10. Un port est une porte numérotée sur cet appareil." },
+  ssh:        { mot: "SSH", p: "reseau", def: "Ouvre un terminal sur un autre ordinateur à travers le réseau, par exemple sur la Jetson du drone." },
+
+  jetson:     { mot: "Jetson", p: "embarque", def: "L'ordinateur de bord NVIDIA, de la taille d'une main, qui fait tourner le code de mission dans le drone." },
+  uart:       { mot: "UART", p: "embarque", def: "Le lien série par fil entre la Jetson et le contrôleur de vol ; MAVLink passe par là." },
+  systemd:    { mot: "systemd", p: "embarque", def: "Le système de Linux qui démarre tout seul des programmes (comme mavros) quand la Jetson s'allume." },
+
+  pid:        { mot: "PID", p: "tuning", def: "Le calcul qui décide quoi envoyer aux moteurs pour corriger l'écart entre ce que fait le drone et ce qu'on veut. Le régler rend le vol stable et précis." },
+  rates:      { mot: "rates", p: "tuning", def: "Les vitesses de rotation que le drone vise quand il tourne sur lui-même ; c'est la boucle de contrôle la plus rapide." },
+  filtre:     { mot: "filtre", p: "tuning", def: "Retire le bruit des mesures des capteurs (vibrations des moteurs) avant que le PID les utilise." },
+
+  zed:        { mot: "caméra ZED", p: "vision", def: "Une caméra stéréo : deux objectifs, comme deux yeux, pour mesurer la distance des objets." },
+  yolo:       { mot: "YOLO", p: "vision", def: "Un réseau de neurones qui repère et nomme des objets dans une image." }
+};
+
+/* Contenu des parties dans la carte A (mots affichés) */
+const CMAP_TERMES = {
+  drone: ["ardupilot", "fc", "mavlink", "mode", "param", "failsafe"],
+  sol: ["mp", "log"],
+  mission: ["zenmav", "ros2", "node", "topic", "service", "mavros", "rosbag"],
+  poste: ["wsl", "docker", "compose", "make"],
+  sim: ["sitl", "gazebo"],
+  embarque: ["jetson", "uart", "systemd", "ssh"],
+  reseau: ["zenoh", "ip"],
+  tuning: ["pid", "filtre", "log"],
+  vision: ["zed", "yolo"],
+  bases: ["terminal", "git", "github", "python", "pr"]
+};
+
+/* Les flèches : de, vers, mots de liaison (\n = retour de ligne) */
+const LIENS = [
+  { de: "poste",    a: "mission", txt: "sert à coder\net tester le" },
+  { de: "vision",   a: "mission", txt: "trouve des\ncibles pour le", hors: true },
+  { de: "mission",  a: "drone",   txt: "commande, via mavros, le" },
+  { de: "mission",  a: "embarque", txt: "tourne\nsur l'" },
+  { de: "sim",      a: "drone",   txt: "fait tourner,\nsur ton PC, le" },
+  { de: "embarque", a: "drone",   txt: "est branché\npar fil au" },
+  { de: "sol",      a: "drone",   txt: "surveille et commande (MAVLink) le" },
+  { de: "tuning",   a: "drone",   txt: "règle le\nvol du" },
+  { de: "embarque", a: "reseau",  txt: "parle au sol par le" },
+  { de: "reseau",   a: "sol",     txt: "aboutit\nà la" }
+];
+
+/* Position des parties dans la carte A (repère 900 x 610) */
+const POS = {
+  poste:    { x: 0,   y: 0,   w: 225 },
+  mission:  { x: 335, y: 0,   w: 250 },
+  vision:   { x: 695, y: 0,   w: 205 },
+  sim:      { x: 0,   y: 220, w: 225 },
+  drone:    { x: 335, y: 220, w: 250 },
+  embarque: { x: 695, y: 220, w: 205 },
+  tuning:   { x: 0,   y: 450, w: 225 },
+  sol:      { x: 335, y: 450, w: 250 },
+  reseau:   { x: 695, y: 450, w: 205 }
+};
+
+/* Les formations. etat : publiee | jet | avenir | hors */
+const FORMATIONS = [
+  { id: "0", titre: "Prérequis et poste de travail", etat: "publiee", duree: "1 h",
+    apprend: "Le terminal, Git, Python orienté objet et le réseau de base. Un autodiagnostic te dit si tu peux passer à la 1.",
+    url: DEPOT + "0-prerequis/0-prerequis-et-poste-de-travail.md",
+    termes: ["terminal", "git", "python", "ip"], avant: [] },
+  { id: "1", titre: "Premier drone", etat: "publiee", duree: "2 h",
+    apprend: "Faire voler un drone simulé dans Mission Planner, puis avec un script Zenmav.",
+    url: DEPOT + "1-premier-drone/1-mission-planner-et-zenmav.md",
+    termes: ["ardupilot", "mp", "sitl", "mavlink", "mode", "zenmav"], avant: ["0"] },
+  { id: "2", titre: "Environnement de travail", etat: "publiee", duree: "3 h",
+    apprend: "Installer Linux dans Windows, les conteneurs et les raccourcis de l'équipe, jusqu'à brancher mavros au drone simulé.",
+    url: DEPOT + "2-environnement/2-wsl-docker-compose-make.md",
+    termes: ["wsl", "docker", "compose", "make"], avant: ["1"] },
+  { id: "3", titre: "ROS 2 Humble", etat: "publiee", duree: "7 h 30",
+    apprend: "Écrire des nodes, puis faire décoller et piloter le drone par mavros.",
+    sous: [
+      { id: "3.1", t: "Les bases", url: DEPOT + "3-ros2/3.1-premiers-pas-ros2.md", avant: ["2"] },
+      { id: "3.2", t: "Launch files, paramètres, services", url: DEPOT + "3-ros2/3.2-launch-parametres-services.md", avant: ["3.1"] },
+      { id: "3.3", t: "mavros", url: DEPOT + "3-ros2/3.3-mavros.md", avant: ["3.2"] },
+      { id: "3.4", t: "Projet : piloter au clavier", url: DEPOT + "3-ros2/3.4-piloter-au-clavier.md", avant: ["3.3"] }
+    ],
+    termes: ["ros2", "node", "topic", "service", "launch", "mavros"], avant: ["2"] },
+  { id: "4", titre: "Environnement de compétition", etat: "publiee", duree: "5 h 45",
+    apprend: "Le repo de mission, une mission complète en simulation, ta première pull request.",
+    sous: [
+      { id: "4.1", t: "Le repo vu de haut", url: DEPOT + "4-env_comp%C3%A9tition/4.1-le-repo-vu-de-haut.md", avant: ["3.2"] },
+      { id: "4.2", t: "Une mission en simulation", url: DEPOT + "4-env_comp%C3%A9tition/4.2-une-mission-en-simulation.md", avant: ["4.1"] },
+      { id: "4.3", t: "Projet : ajouter une node", url: DEPOT + "4-env_comp%C3%A9tition/4.3-projet-ajouter-un-node.md", avant: ["4.2"] }
+    ],
+    termes: ["repo", "submodule", "make", "rosbag", "pr"], avant: ["3.2"],
+    avantTxt: "3.2 (raccourci) ; idéalement toute la 3",
+    note: "Raccourci : la 3.2 suffit pour commencer ici." },
+  { id: "5", titre: "Simulation avancée", etat: "avenir",
+    apprend: "Tester une mission dans un monde 3D, avec Gazebo et mavros.",
+    termes: ["sitl", "gazebo", "mavros"], avant: ["4", "3.4"],
+    avantTxt: "4, et toute la 3 (mavros)",
+    note: "Bâtie sur un dépôt privé de l'équipe, ouvert une fois les formations 0 à 4 faites." },
+  { id: "6", titre: "Réseau et compétition", etat: "avenir",
+    apprend: "Faire passer les messages du drone au sol avec Zenoh, et lancer les programmes au démarrage.",
+    termes: ["zenoh", "ip", "ssh"], avant: ["4"],
+    avantTxt: "4 (la 5 n'est pas requise)",
+    note: "Version courte : l'essentiel pour la compétition." },
+  { id: "7", titre: "Embarqué et Jetson", etat: "avenir",
+    apprend: "Préparer et faire tourner le code sur l'ordinateur de bord du vrai drone.",
+    termes: ["jetson", "ssh", "uart", "systemd"], avant: ["6"] }
+];
+
+const BRANCHES = [
+  { id: "9", titre: "Tuning et analyse post-vol", etat: "jet", branche: "En parallèle", duree: "6 h 30",
+    apprend: "Lire le log d'un vrai vol, puis régler le vol : vibrations, filtres, PID.",
+    sous: [
+      { id: "9.1", t: "Lire un log", url: DEPOT + "9-tuning/9.1-lire-un-log.md", avant: ["1"] },
+      { id: "9.2", t: "Vibrations et filtres", url: DEPOT + "9-tuning/9.2-vibrations-et-filtres.md", avant: ["9.1"] },
+      { id: "9.3", t: "Les rates (vitesses de rotation)", url: DEPOT + "9-tuning/9.3-les-rates.md", avant: ["9.2"] },
+      { id: "9.4", t: "Chaîne complète et démarche", url: DEPOT + "9-tuning/9.4-chaine-complete-et-demarche.md", avant: ["9.3"] }
+    ],
+    termes: ["log", "filtre", "rates", "pid", "param"], avant: ["1"],
+    note: "Dès la 1 : ni Docker ni ROS 2. Des vols de démonstration et des figures seront ajoutés." },
+  { id: "V", titre: "Vision et IA", etat: "hors", branche: "Spécialisation",
+    apprend: "Détecter des cibles avec une caméra et un réseau de neurones.",
+    termes: ["zed", "yolo"], avant: ["3"],
+    note: "Hors parcours : pour qui veut contribuer à la détection de cibles." }
+];
+
+/* ---------- Outils ---------- */
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const couleur = id => `var(--${id})`;
+const nomPartie = id => PARTIES.find(p => p.id === id).nom;
+const ETATS = { publiee: "publiée", jet: "premier jet", avenir: "à venir", hors: "hors parcours" };
+
+function stocke(cle, val) { try { localStorage.setItem(cle, val); } catch (e) {} }
+function lit(cle) { try { return localStorage.getItem(cle); } catch (e) { return null; } }
+
+function boutonTerme(id) {
+  const t = TERMES[id];
+  return `<button type="button" class="terme" data-t="${id}" style="--c:${couleur(t.p)}">${t.mot}</button>`;
+}
+function listeTermes(ids) {
+  /* le point suit son mot pour qu'aucune ligne ne commence par un point */
+  return `<span class="termes">${ids.map((id, i) => `<span class="tw">${boutonTerme(id)}${i < ids.length - 1 ? '<span class="sep">·</span>' : ""}</span>`).join(" ")}</span>`;
+}
+
+/* Toutes les étapes (formations et sous-formations), dans l'ordre */
+const ETAPES = [];
+const PAR_ID = {};
+for (const f of [...FORMATIONS, ...BRANCHES]) {
+  PAR_ID[f.id] = f;
+  if (f.sous) f.sous.forEach(s => { PAR_ID[s.id] = Object.assign({ parent: f.id }, s); });
+}
+for (const f of FORMATIONS) {
+  if (f.sous) f.sous.forEach(s => ETAPES.push(s.id)); else ETAPES.push(f.id);
+}
+
+/* Prérequis transitifs d'une étape */
+function prerequis(id, acc = new Set()) {
+  const e = PAR_ID[id];
+  if (!e) return acc;
+  for (const a of e.avant || []) {
+    if (!acc.has(a)) {
+      acc.add(a);
+      const ea = PAR_ID[a];
+      if (ea && ea.sous) ea.sous.forEach(s => acc.add(s.id));
+      prerequis(a, acc);
+    }
+  }
+  /* entrer dans une formation à sous-étapes demande ce qu'exige sa première sous-étape */
+  if (e.sous) prerequis(e.sous[0].id, acc);
+  return acc;
+}
+
+/* Où chaque mot est vu */
+const VU = {};
+for (const f of [...FORMATIONS, ...BRANCHES]) {
+  for (const t of f.termes) (VU[t] = VU[t] || []).push(f.id === "V" ? "Vision" : f.id);
+}
+
+/* ---------- Carte A ---------- */
+
+function construireCarte() {
+  const cmap = $("#cmap");
+  let html = "";
+  for (const p of PARTIES) {
+    if (p.id === "bases") continue;
+    const pos = POS[p.id];
+    html += `<div class="noeud${p.hors ? " hors" : ""}" data-p="${p.id}" style="--c:${couleur(p.id)};left:${pos.x}px;top:${pos.y}px;width:${pos.w}px">
+      <h3>${p.nom}</h3><p>${p.role}</p>${listeTermes(CMAP_TERMES[p.id])}</div>`;
+  }
+  const b = PARTIES.find(p => p.id === "bases");
+  html += `<div class="bases-barre" data-p="bases" style="--c:${couleur("bases")};top:560px"><h3>${b.nom}</h3><span>utilisées partout, sous tout le reste :</span>${listeTermes(CMAP_TERMES.bases)}</div>`;
+  html += `<svg aria-hidden="true"><defs><marker id="fleche" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8f969f"/></marker></defs><g id="liens"></g></svg>`;
+  cmap.innerHTML = html;
+
+  /* version liste pour le cellulaire */
+  $("#cmap-liste").innerHTML = PARTIES.map(p => {
+    const rel = LIENS.filter(l => l.de === p.id)
+      .map(l => { const t = l.txt.replace(/\n/g, " "); return `<div class="rel">→ ${t}${t.endsWith("'") ? "" : " "}<b>${nomPartie(l.a)}</b></div>`; }).join("");
+    return `<li class="${p.hors ? "hors" : ""}" data-p="${p.id}" style="--c:${couleur(p.id)}"><h3>${p.nom}</h3><p>${p.role}</p>${listeTermes(CMAP_TERMES[p.id])}${rel}</li>`;
+  }).join("");
+}
+
+/* point de sortie d'une boîte vers un point extérieur */
+function bord(b, vers) {
+  const cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+  const dx = vers.x - cx, dy = vers.y - cy;
+  if (dx === 0 && dy === 0) return { x: cx, y: cy };
+  const sx = dx !== 0 ? (b.w / 2) / Math.abs(dx) : Infinity;
+  const sy = dy !== 0 ? (b.h / 2) / Math.abs(dy) : Infinity;
+  const s = Math.min(sx, sy);
+  return { x: cx + dx * s, y: cy + dy * s };
+}
+
+function tracerLiens() {
+  const boites = {};
+  $$("#cmap .noeud").forEach(n => {
+    boites[n.dataset.p] = { x: n.offsetLeft, y: n.offsetTop, w: n.offsetWidth, h: n.offsetHeight };
+  });
+  let svg = "";
+  for (const l of LIENS) {
+    const A = boites[l.de], B = boites[l.a];
+    /* lignes droites : si les boîtes se chevauchent en x ou en y, on aligne */
+    let ca = { x: A.x + A.w / 2, y: A.y + A.h / 2 }, cb = { x: B.x + B.w / 2, y: B.y + B.h / 2 };
+    const chevX = Math.min(A.x + A.w, B.x + B.w) - Math.max(A.x, B.x);
+    const chevY = Math.min(A.y + A.h, B.y + B.h) - Math.max(A.y, B.y);
+    if (chevX > 40) { const x = (Math.max(A.x, B.x) + Math.min(A.x + A.w, B.x + B.w)) / 2; ca.x = cb.x = x; }
+    else if (chevY > 30) { const y = (Math.max(A.y, B.y) + Math.min(A.y + A.h, B.y + B.h)) / 2; ca.y = cb.y = y; }
+    const p1 = bord(A, cb), p2 = bord(B, ca);
+    const pad = 4;
+    const len = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    const ux = (p2.x - p1.x) / len, uy = (p2.y - p1.y) / len;
+    const q1 = { x: p1.x + ux * pad, y: p1.y + uy * pad }, q2 = { x: p2.x - ux * pad, y: p2.y - uy * pad };
+    svg += `<g data-de="${l.de}" data-a="${l.a}"><line class="lien-trait${l.hors ? " hors" : ""}" x1="${q1.x}" y1="${q1.y}" x2="${q2.x}" y2="${q2.y}" marker-end="url(#fleche)"/>`;
+    const mx = (q1.x + q2.x) / 2, my = (q1.y + q2.y) / 2;
+    const lignes = l.txt.split("\n");
+    const h = 15;
+    const y0 = my - (lignes.length - 1) * h / 2;
+    svg += `<text class="lien-label" text-anchor="middle" stroke="${getComputedStyle(document.body).backgroundColor}" stroke-width="6" stroke-linejoin="round" paint-order="stroke">` +
+      lignes.map((t, i) => `<tspan x="${mx}" y="${y0 + i * h + 4}">${t}</tspan>`).join("") + `</text></g>`;
+  }
+  $("#liens").innerHTML = svg;
+  $$("#liens g").forEach(g => g.classList.toggle("eteint-lien", !!filtre && g.dataset.de !== filtre && g.dataset.a !== filtre));
+}
+
+function ajusterCarte() {
+  const cadre = $(".cmap-cadre"), cmap = $("#cmap");
+  if (getComputedStyle(cadre).display === "none") return;
+  const k = Math.min(1.25, cadre.clientWidth / 900);
+  cmap.style.transform = `scale(${k})`;
+  const bas = $(".bases-barre", cmap);
+  bas.style.top = (Math.max(...$$(".noeud", cmap).map(n => n.offsetTop + n.offsetHeight)) + 26) + "px";
+  const h = bas.offsetTop + bas.offsetHeight + 4;
+  cmap.style.height = h + "px";
+  $("svg", cmap).style.height = h + "px";
+  cadre.style.height = (h * k) + "px";
+}
+
+/* ---------- Parcours B ---------- */
+
+function htmlStation(f) {
+  const sous = f.sous
+    ? `<div class="sous">${f.sous.map(s => `<span><a href="${s.url}" target="_blank" rel="noopener" data-e="${s.id}"><span class="n">${s.id}</span> ${s.t}</a>${s.id === "3.2" ? ' <span class="raccourci">raccourci possible vers la 4</span>' : ""}</span>`).join("")}</div>`
+    : "";
+  const ouvrir = (!f.sous && f.url) ? ` <a class="ouvrir" href="${f.url}" target="_blank" rel="noopener">Ouvrir ↗</a>` : "";
+  const avant = f.avant.length
+    ? `<div class="avant">À faire avant : <b>${f.avantTxt || f.avant.join(", ")}</b></div>`
+    : `<div class="avant">À faire avant : <b>rien, on commence ici</b></div>`;
+  return `<li class="station ${f.etat}" data-f="${f.id}" tabindex="0" aria-label="Formation ${f.id} : ${f.titre}, ${ETATS[f.etat]}">
+    <div class="rond"><span>${f.id}</span></div>
+    <div class="corps">
+      <h3>${f.branche ? `<span class="etat">${f.branche}</span>` : ""}${f.titre} <span class="etat">${ETATS[f.etat]}${f.duree ? ` · ${f.duree}` : ""}</span><span class="tag-suivant">ta prochaine étape</span></h3>
+      <p>${f.apprend}${ouvrir}</p>
+      ${sous}
+    </div>
+    <div class="cote">${listeTermes(f.termes)}${avant}${f.note ? `<div class="note">${f.note}</div>` : ""}</div>
+  </li>`;
+}
+
+function construireParcours() {
+  $("#ligne").innerHTML = FORMATIONS.map(htmlStation).join("");
+  $("#branches").innerHTML = BRANCHES.map(htmlStation).join("");
+
+  const sel = $("#rendu");
+  sel.innerHTML = `<option value="">Je commence</option>` +
+    ETAPES.map(id => `<option value="${id}">J'ai fini la ${id}</option>`).join("");
+  const memo = lit("carte-controle-rendu");
+  if (memo !== null && (memo === "" || ETAPES.includes(memo))) sel.value = memo;
+  sel.addEventListener("change", () => { stocke("carte-controle-rendu", sel.value); appliquerRendu(); });
+  appliquerRendu();
+}
+
+function appliquerRendu() {
+  const v = $("#rendu").value;
+  const i = v === "" ? -1 : ETAPES.indexOf(v);
+  const faites = new Set(ETAPES.slice(0, i + 1));
+  const suivante = ETAPES[i + 1];
+  $$(".station").forEach(s => {
+    const f = PAR_ID[s.dataset.f];
+    let fait;
+    if (f.sous) fait = f.sous.every(x => faites.has(x.id));
+    else fait = faites.has(f.id);
+    s.classList.toggle("fait", fait);
+    const contientSuivante = suivante && (f.id === suivante || (f.sous && f.sous.some(x => x.id === suivante)));
+    s.classList.toggle("suivante", !!contientSuivante);
+    /* après la 3.2, la 4 est aussi proposée (raccourci) */
+    const tag = $(".tag-suivant", s);
+    if (tag) tag.textContent = (v === "3.2" && f.id === "4") ? "ou ici, par le raccourci" : "ta prochaine étape";
+    if (v === "3.2" && f.id === "4") s.classList.add("suivante");
+  });
+  $$(".sous a[data-e]").forEach(a => {
+    a.style.fontWeight = a.dataset.e === suivante ? "700" : "";
+    a.style.textDecorationLine = faites.has(a.dataset.e) ? "line-through" : "";
+  });
+}
+
+/* ---------- Surbrillance des prérequis ---------- */
+
+let focus = null;
+function focaliser(id) {
+  if (focus === id || id === null) { focus = null; effacerFocus(); return; }
+  focus = id;
+  const pre = prerequis(id);
+  $$(".station").forEach(s => {
+    const f = PAR_ID[s.dataset.f];
+    const dedans = pre.has(f.id) || (f.sous && f.sous.some(x => pre.has(x.id)));
+    s.classList.toggle("cible", f.id === id);
+    s.classList.toggle("prereq", !!dedans && f.id !== id);
+    s.classList.toggle("eteint", !dedans && f.id !== id);
+  });
+  $$(".sous a[data-e]").forEach(a => {
+    const st = a.closest(".station").dataset.f;
+    a.classList.toggle("eteint", st !== id && !pre.has(a.dataset.e));
+  });
+  const liste = ETAPES.filter(e => pre.has(e)).concat(BRANCHES.map(b => b.id).filter(b => pre.has(b)));
+  const f = PAR_ID[id];
+  const b = $("#bandeau");
+  b.innerHTML = liste.length
+    ? `Avant la <b>${id === "V" ? "Vision" : id}</b> (${f.titre}) : ${resumer(liste)}. <button type="button">Tout réafficher</button>`
+    : `La <b>${id}</b> n'a aucun prérequis : c'est le point de départ. <button type="button">Tout réafficher</button>`;
+  b.classList.add("visible");
+  $("button", b).addEventListener("click", () => focaliser(null));
+}
+function resumer(liste) {
+  /* regroupe 3.1, 3.2, 3.3, 3.4 en « 3 » quand elles y sont toutes */
+  const out = [];
+  for (const f of FORMATIONS) {
+    if (f.sous) {
+      const ids = f.sous.map(s => s.id).filter(s => liste.includes(s));
+      if (ids.length === f.sous.length) out.push(`<b>${f.id}</b>`);
+      else if (ids.length) out.push(`<b>${ids.join(", ")}</b>`);
+    } else if (liste.includes(f.id)) out.push(`<b>${f.id}</b>`);
+  }
+  return out.join(", ");
+}
+function effacerFocus() {
+  $$(".station").forEach(s => s.classList.remove("cible", "prereq", "eteint"));
+  $$(".sous a").forEach(a => a.classList.remove("eteint"));
+  $("#bandeau").classList.remove("visible");
+  appliquerFiltre();
+}
+
+/* ---------- Filtre par partie ---------- */
+
+let filtre = null;
+function construireFiltres() {
+  const zone = $("#filtres");
+  zone.insertAdjacentHTML("beforeend",
+    `<button type="button" class="filtre" data-p="" aria-pressed="true">Toutes</button>` +
+    PARTIES.map(p => `<button type="button" class="filtre" data-p="${p.id}" style="--c:${couleur(p.id)}" aria-pressed="false">${p.nom}</button>`).join(""));
+  zone.addEventListener("click", e => {
+    const b = e.target.closest(".filtre");
+    if (b) choisirFiltre(b.dataset.p || null);
+  });
+}
+function choisirFiltre(p) {
+  filtre = (filtre === p) ? null : p;
+  $$(".filtre").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.p || null) === filtre)));
+  if (focus) { focus = null; $$(".station").forEach(s => s.classList.remove("cible", "prereq")); $("#bandeau").classList.remove("visible"); }
+  appliquerFiltre();
+}
+function appliquerFiltre() {
+  $$(".terme").forEach(t => t.classList.toggle("eteint", !!filtre && TERMES[t.dataset.t].p !== filtre));
+  $$("#cmap .noeud, #cmap .bases-barre, #cmap-liste li").forEach(n => {
+    n.classList.toggle("eteint", !!filtre && n.dataset.p !== filtre);
+    n.classList.toggle("actif", !!filtre && n.dataset.p === filtre);
+  });
+  $$("#liens g").forEach(g => g.classList.toggle("eteint-lien", !!filtre && g.dataset.de !== filtre && g.dataset.a !== filtre));
+  $$(".station").forEach(s => {
+    const f = PAR_ID[s.dataset.f];
+    s.classList.toggle("eteint", !!filtre && !f.termes.some(t => TERMES[t].p === filtre));
+  });
+}
+
+/* ---------- Bulle de définition ---------- */
+
+const bulle = $("#bulle");
+let bulleCible = null;
+function montrerBulle(el) {
+  const id = el.dataset.t, t = TERMES[id];
+  const vu = VU[id] ? `Vu dans : ${VU[id].map(v => v === "Vision" ? "Vision" : "formation " + v).join(", ")}` : "";
+  bulle.style.setProperty("--c", couleur(t.p));
+  bulle.innerHTML = `<div class="div">${nomPartie(t.p)}</div><div><span class="mot">${t.mot}</span> : ${t.def}</div>${vu ? `<div class="vu">${vu}</div>` : ""}`;
+  bulle.classList.add("visible");
+  if (bulleCible) bulleCible.classList.remove("ouvert");
+  bulleCible = el; el.classList.add("ouvert");
+  if (window.matchMedia("(max-width: 720px)").matches) return;
+  const r = el.getBoundingClientRect(), bw = bulle.offsetWidth, bh = bulle.offsetHeight;
+  let x = Math.min(Math.max(8, r.left), window.innerWidth - bw - 8);
+  let y = r.bottom + 6;
+  if (y + bh > window.innerHeight - 8) y = r.top - bh - 6;
+  bulle.style.left = x + "px"; bulle.style.top = y + "px";
+}
+function cacherBulle() {
+  bulle.classList.remove("visible");
+  if (bulleCible) bulleCible.classList.remove("ouvert");
+  bulleCible = null;
+}
+
+/* ---------- Lexique C ---------- */
+
+function construireLexique() {
+  $("#lex").innerHTML = PARTIES.map(p => {
+    const ids = Object.keys(TERMES).filter(k => TERMES[k].p === p.id);
+    if (!ids.length) return "";
+    return `<div class="lex-groupe" style="--c:${couleur(p.id)}"><h3>${p.nom}</h3><dl>` +
+      ids.map(k => `<div class="lex-item" data-q="${(TERMES[k].mot + " " + TERMES[k].def).toLowerCase()}"><dt id="mot-${k}">${TERMES[k].mot}</dt><dd>${TERMES[k].def}${VU[k] ? ` <span class="vu">(${VU[k].map(v => v === "Vision" ? "Vision" : "form. " + v).join(", ")})</span>` : ""}</dd></div>`).join("") +
+      `</dl></div>`;
+  }).join("");
+  $("#cherche").addEventListener("input", e => {
+    const q = e.target.value.trim().toLowerCase();
+    $$(".lex-item").forEach(i => i.classList.toggle("cache", !!q && !i.dataset.q.includes(q)));
+    $$(".lex-groupe").forEach(g => g.style.display = $$(".lex-item:not(.cache)", g).length ? "" : "none");
+  });
+}
+
+/* ---------- Événements ---------- */
+
+document.addEventListener("mouseover", e => {
+  const t = e.target.closest(".terme");
+  if (t && window.matchMedia("(hover: hover)").matches) montrerBulle(t);
+});
+document.addEventListener("mouseout", e => {
+  const t = e.target.closest(".terme");
+  if (t && window.matchMedia("(hover: hover)").matches && !t.contains(e.relatedTarget)) cacherBulle();
+});
+document.addEventListener("focusin", e => { const t = e.target.closest(".terme"); if (t) montrerBulle(t); });
+document.addEventListener("focusout", e => { if (e.target.closest(".terme")) cacherBulle(); });
+document.addEventListener("click", e => {
+  const t = e.target.closest(".terme");
+  if (t) { e.stopPropagation(); if (bulleCible === t && !window.matchMedia("(hover: hover)").matches) cacherBulle(); else montrerBulle(t); return; }
+  if (!e.target.closest("#bulle")) cacherBulle();
+  if (e.target.closest("a, select, button, input")) return;
+  const n = e.target.closest("#cmap .noeud, #cmap .bases-barre, #cmap-liste li");
+  if (n) { choisirFiltre(n.dataset.p); return; }
+  const s = e.target.closest(".station");
+  if (s) { if (filtre) choisirFiltre(filtre); focaliser(s.dataset.f); }
+}, true);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { cacherBulle(); if (focus) focaliser(null); }
+  const s = e.target.closest && e.target.closest(".station");
+  if (s && e.target === s && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); focaliser(s.dataset.f); }
+});
+window.addEventListener("scroll", cacherBulle, { passive: true });
+
+function miseEnPage() { ajusterCarte(); tracerLiens(); }
+
+if (location.hash === "#diapo") document.documentElement.classList.add("diapo");
+
+construireCarte();
+construireFiltres();
+construireParcours();
+construireLexique();
+miseEnPage();
+window.addEventListener("resize", miseEnPage);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(miseEnPage);
+</script>
+</body>
+</html>
