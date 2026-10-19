@@ -2,7 +2,7 @@
 
 Documents : [4.1](4.1-le-repo-vu-de-haut.md), [4.2](4.2-une-mission-en-simulation.md), [4.3](4.3-projet-ajouter-un-node.md), [annexe 4.4 (leads)](4.4-annexe-leads-creer-un-environnement.md), [4.5](4.5-pour-plus-tard.md).
 
-Prérequis : formation 0 (git, section 3), formation 1 (le SITL dans Mission Planner), formations 2 et 3. La formation 4 n'est pas nécessaire, parce que le simulateur utilisé est celui de Mission Planner.
+Prérequis : formation 0 (git, section 3), formation 1 (le SITL dans Mission Planner), formations 2 et 3.
 
 Voici les objectifs de chaque document :
 
