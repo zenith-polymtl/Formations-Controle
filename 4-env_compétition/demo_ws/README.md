@@ -1,4 +1,4 @@
-# demo_ws : la mission démo de la formation 5
+# demo_ws : la mission démo de la formation 4
 
 La démo est une mission de compétition réduite à l'essentiel : une machine à quatre états
 (`IDLE`, `GOTO`, `ACT`, `RETURN`). D'abord, la node attend un GO sur un interrupteur de la
@@ -14,7 +14,7 @@ racine du clone. Remplacez `<dossier de la formation>` par le chemin de votre cl
 Formations-Controle : `~/Formations-Controle` si vous avez suivi la formation 2.
 
 ```bash
-cp -r <dossier de la formation>/5-env_compétition/demo_ws workspaces/
+cp -r <dossier de la formation>/4-env_compétition/demo_ws workspaces/
 cp workspaces/demo_ws/src/demo_bringup/config/demo.yaml config/
 make build C=demo
 ```

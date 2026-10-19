@@ -1,7 +1,7 @@
 # Annexe : le SITL sans Mission Planner (Docker)
 
 > [!WARNING]
-> **Expérimental.** Ce chemin n'a encore été déroulé par personne dans l'équipe. Il est écrit pour les Mac, où Mission Planner n'existe pas, et il servira de premier SITL hors Mission Planner dans la formation 4, pour tout le monde. La première personne qui l'essaie est priée de noter ce qui casse dans le fil **Formations et Questions** du salon Contrôle sur Discord, avec les messages exacts : c'est comme ça que l'annexe deviendra fiable.
+> **Expérimental.** Ce chemin n'a encore été déroulé par personne dans l'équipe. Il est écrit pour les Mac, où Mission Planner n'existe pas, et il servira de premier SITL hors Mission Planner dans la formation 5, pour tout le monde. La première personne qui l'essaie est priée de noter ce qui casse dans le fil **Formations et Questions** du salon Contrôle sur Discord, avec les messages exacts : c'est comme ça que l'annexe deviendra fiable.
 
 De les formations 1 à 3, le drone simulé vient de la simulation intégrée de Mission Planner, qui expose MAVLink sur les ports TCP 5762 et 5763 de la machine. Ici, le simulateur ArduPilot (SITL) tourne lui-même dans un conteneur et expose les deux mêmes ports : mavros, Zenmav et le reste des formations ne voient pas la différence. Pour regarder le drone, QGroundControl remplace Mission Planner.
 
@@ -62,5 +62,5 @@ Deux autres points à confirmer sur une vraie machine : que l'image `ardupilot/a
 
 - ArduPilot, *SITL Simulator*, <https://ardupilot.org/dev/docs/sitl-simulator-software-in-the-loop.html> : les options de `sim_vehicle.py` (lieu de départ `-L`, vitesse `--speedup`, type de véhicule).
 - ArduPilot, *Using SITL with Docker*, <https://ardupilot.org/dev/docs/building-setup-linux.html> : le Dockerfile officiel dont `sitl/Dockerfile` s'inspire.
-- Le dépôt aeac-2026 fait la même chose avec `make mavros-sim`, sur un SITL lancé à côté : la formation 4, à venir, y reviendra.
-- Dans le repo de mission de la formation 5, la simulation se lance avec `make sim C=<mission>`. Sans réglage, mavros y vise `tcp://127.0.0.1:5762` (`SITL=mp`), le port que ce SITL expose, donc il devrait le trouver comme il trouve Mission Planner (pas encore essayé). Pour un SITL sur un autre port ou une autre machine : `make sim C=<mission> SITL=<URL mavros>`, par exemple `SITL=tcp://<adresse>:5762`.
+- Le dépôt aeac-2026 fait la même chose avec `make mavros-sim`, sur un SITL lancé à côté : la formation 5, à venir, y reviendra.
+- Dans le repo de mission de la formation 4, la simulation se lance avec `make sim C=<mission>`. Sans réglage, mavros y vise `tcp://127.0.0.1:5762` (`SITL=mp`), le port que ce SITL expose, donc il devrait le trouver comme il trouve Mission Planner (pas encore essayé). Pour un SITL sur un autre port ou une autre machine : `make sim C=<mission> SITL=<URL mavros>`, par exemple `SITL=tcp://<adresse>:5762`.

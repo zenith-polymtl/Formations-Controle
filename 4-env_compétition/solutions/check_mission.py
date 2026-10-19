@@ -1,6 +1,6 @@
 """Test hors ROS de la demo (haversine_m, next_state, transitions de la node) avec des stubs rclpy.
 
-Pour les leads : `python 5-env_compétition/solutions/check_mission.py` apres toute retouche de
+Pour les leads : `python 4-env_compétition/solutions/check_mission.py` apres toute retouche de
 demo_ws. Ne pas copier dans le repo de mission (pas de tests la-bas).
 """
 import importlib.util

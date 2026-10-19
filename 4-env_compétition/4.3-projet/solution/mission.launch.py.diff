@@ -6,7 +6,7 @@ node démarre quand même, avec les défauts écrits dans son code.
 Deux choses à remarquer. Le moniteur est une seconde Node dans le même launch file : il démarre et
 s'arrête avec la mission, personne n'a à penser à le lancer. Et les deux nodes reçoivent le
 même fichier de paramètres, passé tel quel, parce qu'un fichier de paramètres ROS 2 est indexé
-par nom de node (voir 5.3, section 3.2). Le moniteur ne reçoit
+par nom de node (voir 4.3, section 3.2). Le moniteur ne reçoit
 pas les paramètres du site : il ne vole pas, il regarde.
 
 diff --git a/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py b/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
@@ -15,7 +15,7 @@ index 8dcc38c..21f090e 100644
 +++ b/workspaces/demo_ws/src/demo_bringup/launch/mission.launch.py
 @@ -1,9 +1,11 @@
 -"""Launch file de la mission démo : une node, deux fichiers de configuration du repo.
-+"""Launch file de la mission démo : la node de mission, le moniteur du projet 5.3, et deux
++"""Launch file de la mission démo : la node de mission, le moniteur du projet 4.3, et deux
 +fichiers de configuration du repo.
  
  `config/demo.yaml` et `config/sites/<site>.yaml` sont tous deux au format paramètres ROS 2 :
@@ -33,7 +33,7 @@ index 8dcc38c..21f090e 100644
              {'sim': ParameterValue(LaunchConfiguration('sim'), value_type=bool)},
          ],
      )
-+    # Le moniteur du projet 5.3 : il ne fait que regarder, il part et s'arrête avec la mission.
++    # Le moniteur du projet 4.3 : il ne fait que regarder, il part et s'arrête avec la mission.
 +    # Il reçoit le même config/demo.yaml, où il lit sa propre section `mission_monitor:` ; les
 +    # paramètres du site ne le concernent pas.
 +    monitor = Node(

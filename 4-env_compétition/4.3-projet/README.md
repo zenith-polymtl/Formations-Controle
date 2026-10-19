@@ -1,6 +1,6 @@
-# Projet du document 5.3 : la node `mission_monitor`
+# Projet du document 4.3 : la node `mission_monitor`
 
-Ce dossier contient l'énoncé du projet. Le mode d'emploi, pas à pas, est dans le document [5.3](../5.3-projet-ajouter-un-node.md).
+Ce dossier contient l'énoncé du projet. Le mode d'emploi, pas à pas, est dans le document [4.3](../4.3-projet-ajouter-un-node.md).
 
 ## Le cahier des charges
 
@@ -20,7 +20,7 @@ Le résumé dit ce que le moniteur a vu. Il ne dit pas que la mission va bien : 
 
 ## Les fichiers à toucher, dans l'ordre
 
-| Fichier | Ce qu'on y fait | Section de 5.3 |
+| Fichier | Ce qu'on y fait | Section de 4.3 |
 |---|---|---|
 | `workspaces/demo_ws/src/demo_monitor/` | Copier le squelette | 2.1 |
 | `workspaces/demo_ws/src/demo_monitor/demo_monitor/monitor.py` | Les six TODO | 2.2 et 2.3 |
@@ -32,7 +32,7 @@ Le résumé dit ce que le moniteur a vu. Il ne dit pas que la mission va bien : 
 
 ## Les six règles
 
-La section 2.3 du document 5.3 détaille chaque règle, avec l'endroit du fichier qui la respecte. Voici seulement la liste :
+La section 2.3 du document 4.3 détaille chaque règle, avec l'endroit du fichier qui la respecte. Voici seulement la liste :
 
 1. Le nom du topic vient de `topics.py`.
 2. L'état se compare à une constante de `MissionState`.
