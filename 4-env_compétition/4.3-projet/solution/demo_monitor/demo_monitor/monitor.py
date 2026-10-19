@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Surveillance de la mission démo : solution du projet du document 5.3.
+"""Surveillance de la mission démo : solution du projet du document 4.3.
 
 La node `mission_monitor` regarde et ne touche à rien : elle écoute l'état de la mission et la
 batterie de mavros, et publie une fois par seconde un résumé JSON sur un topic externe.
 
-Les six règles que ce fichier illustre sont dans `5.3-projet/README.md` ; la ligne qui respecte
+Les six règles que ce fichier illustre sont dans `4.3-projet/README.md` ; la ligne qui respecte
 chacune est annotée ci-dessous.
 """
 

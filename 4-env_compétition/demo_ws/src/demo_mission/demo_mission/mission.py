@@ -1,4 +1,4 @@
-"""Mission démo de la formation 5 : le squelette d'une mission de compétition, en quatre états.
+"""Mission démo de la formation 4 : le squelette d'une mission de compétition, en quatre états.
 
 IDLE (attente du GO sur la manette), GOTO (vol vers le waypoint du site), ACT (l'action de la
 mission), RETURN (retour au départ), puis IDLE. La node n'arme jamais et ne change jamais de

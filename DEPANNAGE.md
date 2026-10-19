@@ -20,7 +20,7 @@ Les problèmes qui reviennent dans tous les modules, parce qu'ils touchent l'env
 | `Cannot connect to the Docker daemon` | Le service Docker ne roule pas | `sudo service docker start` |
 | Un dossier créé par un conteneur est impossible à supprimer | Il appartient à root | `sudo chown -R $USER:$USER <dossier>` (formation 2, section 2.5) |
 | Le build échoue sur un téléchargement, ou `no space left on device` | Réseau instable, ou disque plein | Relancer le build (le cache reprend) ; `docker system df`, puis `docker system prune` |
-| `service "example" is not running` | Le conteneur de travail n'est pas démarré | Formations 2 et 3 : `make shell` le démarre. Dans le repo de mission (formation 5), `make shell` entre seulement dans le conteneur qui tourne : `make dev` ou `make sim` le démarre |
+| `service "example" is not running` | Le conteneur de travail n'est pas démarré | Formations 2 et 3 : `make shell` le démarre. Dans le repo de mission (formation 4), `make shell` entre seulement dans le conteneur qui tourne : `make dev` ou `make sim` le démarre |
 | `ros2: command not found` dans un conteneur | ROS 2 n'est pas sourcé dans ce shell | Entrer par `make shell`, qui source tout ; sinon `source /opt/ros/humble/setup.bash` |
 | Les deux formations les formations 2 et 3 se marchent dessus | Mêmes ports pour mavros | `make down` dans l'une avant `make mavros` dans l'autre |
 
@@ -31,7 +31,7 @@ Les problèmes qui reviennent dans tous les modules, parce qu'ils touchent l'env
 | `connected: false` qui ne change jamais dans `/mavros/state` | mavros ne joint pas la simulation | Simulation démarrée dans MP ? `make mavros-logs` pour voir ce que mavros tente ; mode Mirrored ; `make mavros FCU_HOST=<adresse>` sous Windows 10 (formations 2 et 3). Dans le repo de mission, `make mavros` vise le Pixhawk de la Jetson : la simulation passe par `make sim` (source choisie par `SITL=`, adresse de Mission Planner par `SITL_HOST=` dans `.env`), `make print-vars` affiche le `FCU_URL` obtenu et `make logs IMG=mavros-sim` ce que mavros tente |
 | `Bind for 0.0.0.0:5762 failed` ou mavros qui redémarre en boucle | Un autre programme occupe déjà le port (un deuxième mavros, un vieux script) | `make down` partout, `docker ps` doit être vide, puis relancer |
 | Zenmav ne se connecte pas alors que mavros roule | Les deux veulent le port 5762 | Zenmav sur `tcp:127.0.0.1:5763` (formation 2, section 2.9) |
-| Un mavros de formation 5 (`make logs IMG=mavros-sim`) n'arrive pas à se connecter alors que la simulation tourne | Le mavros d'une formation précédente (2 ou 3) roule encore et tient le port 5762 de Mission Planner | `make down` dans le dossier de cette formation, puis relancer `make sim` |
+| Un mavros de formation 4 (`make logs IMG=mavros-sim`) n'arrive pas à se connecter alors que la simulation tourne | Le mavros d'une formation précédente (2 ou 3) roule encore et tient le port 5762 de Mission Planner | `make down` dans le dossier de cette formation, puis relancer `make sim` |
 | Deux nodes ROS 2 ne se voient pas | `ROS_DOMAIN_ID` différent, ou pas le même réseau | Même valeur dans les deux. Formations 2 et 3 : le Compose met 2 partout. Repo de mission : `dev` et `mavros-sim` sont sur le domaine 3 (`SIM_DOMAIN=` dans `.env` pour en changer), les conteneurs de la Jetson sur le 2. En dehors des formations, voir la formation 6 |
 
 ## Quand rien ne marche

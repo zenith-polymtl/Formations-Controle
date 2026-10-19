@@ -68,7 +68,7 @@ Question à poser : « que devient le callback de la batterie pendant que le tie
 - [ ] Rien dans `tick()` : aucun log à chaque tour de timer.
 - [ ] La recrue sait pourquoi le `WARN` sort dès le démarrage en SITL : le SITL simule une
       batterie d'environ 12.6 V, sous le seuil de 14.0 V réglé pour la batterie du drone. Le
-      test de 5.3, section 3.4 (seuil à `11.0`, le `WARN` disparaît), montre que le seuil vient
+      test de 4.3, section 3.4 (seuil à `11.0`, le `WARN` disparaît), montre que le seuil vient
       bien du YAML.
 - [ ] Les messages sont en français, le code et les noms de topics en anglais.
 
@@ -80,7 +80,7 @@ combien de lignes sortent ? » La bonne réponse est : une seule, grâce à `bat
 - [ ] `config/demo.yaml` reçoit une section `mission_monitor: ros__parameters:` avec
       `battery_warn_v`. Le seuil n'est pas réécrit dans le launch file. Dans la node, il
       apparaît seulement comme valeur par défaut, à la déclaration du paramètre. Un fichier de
-      paramètres ROS 2 est indexé par nom de node : voir 5.3, section 3.2.
+      paramètres ROS 2 est indexé par nom de node : voir 4.3, section 3.2.
 - [ ] Le launch file lance le moniteur en même temps que la mission et lui passe
       `config/demo.yaml` tel quel, sans lire le YAML lui-même. Si la recrue a ajouté ses clés
       sous `demo_mission:` au lieu d'une section à son nom, la node tourne quand même et rien
@@ -88,7 +88,7 @@ combien de lignes sortent ? » La bonne réponse est : une seule, grâce à `bat
       constatera que le seuil est resté à la valeur par défaut du code. C'est la panne la plus discrète du projet, et
       la raison d'être du cinquième point de contact, « la config ».
 - [ ] La mise en forme du résumé est dans une fonction de module, sans appel ROS, et la recrue
-      l'a essayée seule dans `python3`, dans `make shell` (5.3, section 3.4).
+      l'a essayée seule dans `python3`, dans `make shell` (4.3, section 3.4).
 - [ ] `voltage` absent vaut `null` et non `0.0`, et la recrue sait dire pourquoi c'est
       important pour la personne qui lit le résumé au sol.
 - [ ] Le temps dans l'état est celui que la mission publie, republié tel quel : le moniteur ne

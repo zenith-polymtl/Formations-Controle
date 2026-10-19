@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Surveillance de la mission démo : squelette du projet du document 5.3.
+"""Surveillance de la mission démo : squelette du projet du document 4.3.
 
 Les imports, la classe, le paramètre, les subscribers, le publisher et le timer sont en place ;
 les six `# TODO n :` sont à écrire. Le cahier des charges, les six règles et la liste complète
-des fichiers à toucher sont dans `5.3-projet/README.md`, à lire avant d'écrire une ligne.
+des fichiers à toucher sont dans `4.3-projet/README.md`, à lire avant d'écrire une ligne.
 
 Tel quel, ce squelette se construit, mais il ne démarre qu'avec DEMO_SUMMARY dans topics.py
-(5.3, section 2.4) ; il crée alors son topic, et n'y publie rien avant le TODO 6.
+(4.3, section 2.4) ; il crée alors son topic, et n'y publie rien avant le TODO 6.
 """
 
 import json
