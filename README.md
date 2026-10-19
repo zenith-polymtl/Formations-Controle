@@ -2,6 +2,8 @@
 
 Le parcours de formation de l'équipe contrôle de Zenith : du premier drone simulé jusqu'à un node ROS 2 qui pilote le drone, dans l'environnement exact du repo de compétition. Les documents se lisent directement ici, sur GitHub ; le repo se clone dans la formation 2.
 
+**Vue d'ensemble : [la carte du parcours](https://zenith-polymtl.github.io/Formations-Controle/).** Une page interactive qui montre les grandes parties du contrôle de drone, leurs mots-clés et l'ordre des formations, avec les prérequis de chacune. À ouvrir avant la formation 0.
+
 | Module | Sujet | Durée |
 |---|---|---|
 | [Formation 0](0-prerequis/0-prerequis-et-poste-de-travail.md) | Prérequis et poste de travail : terminal, Git, Python orienté objet, réseau | 1 h |
