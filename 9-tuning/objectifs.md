@@ -1,14 +1,18 @@
 # La formation 9 : tuning et analyse post-vol
 
-Branche parallèle du parcours : elle se fait après la formation 1 et ne demande ni Docker ni ROS 2. Un seul log réel, le premier vol du Crash Proof (8 août 2026), est suivi du début à la fin ; les conclusions de la formation sont celles qui ont réellement été appliquées sur le drone trois jours plus tard.
+Branche parallèle du parcours : elle se fait après la formation 1 et ne demande ni Docker ni ROS 2. Un seul log réel est suivi du début à la fin : **le vol de tuning du 27 octobre 2026**, un vol type, fait exprès pour cette formation. On y voit toutes les phases d'un vrai vol de tuning : les modes qui montent un à un, les coups de stick axe par axe, puis une série de réglages changés en vol pour comparer un drone sous-réglé, bien réglé et trop nerveux.
+
+> [!NOTE]
+> **À quoi ça sert en compétition**
+> Un drone de compétition vole en mode autonome (Guided, Auto) : toute la chaîne de contrôleurs travaille, et chaque défaut de réglage se voit dans la précision de la trajectoire, la stabilité de la caméra et la consommation de la batterie. Un drone mal filtré chauffe ses moteurs ; un rate trop nerveux fait trembler l'image ; un contrôleur vertical trop mou rate un atterrissage. Et le jour où un vol tourne mal, c'est le log qui dit pourquoi. Cette formation apprend à lire ce log et à décider quoi changer.
 
 Objectifs, par document :
 
-- **la formation 9.1, lire un log** : préparer un vol de tuning (options de log, consignes au pilote, failsafes minimaux), distinguer `.bin` et `.tlog`, ouvrir un log dans les trois outils web d'ArduPilot, situer les contrôleurs de la chaîne, remplir la fiche de santé du système avant toute conclusion.
-- **la formation 9.2, vibrations et filtres** : lire un spectre, placer le notch harmonique et le passe-bas gyro dans Filter Review avec la cible de moins 50 dB, exporter, importer et vérifier les paramètres.
-- **la formation 9.3, les rates** : lire target contre actual et la step response dans PID Review, décider quel gain bouger, dans quel sens et de combien, comprendre le cas du yaw.
-- **la formation 9.4, la chaîne complète et la démarche** : angle, vertical et horizontal dans UAV Log Viewer avec la fiche des contrôleurs, la marge de contrôle des moteurs, le journal d'hypothèses et l'ordre des vols, la reconstruction d'un vol qui a mal tourné.
+- **la formation 9.1, lire un log** : ce qu'un contrôleur essaie de faire, comment se déroule un vol de tuning type, les trois outils web d'ArduPilot, la fiche de santé du système avant toute conclusion.
+- **la formation 9.2, vibrations et filtres** : lire un spectre, placer le notch harmonique et le passe-bas gyro dans Filter Review avec la cible de moins 50 dB.
+- **la formation 9.3, les rates** : lire target contre actual et la step response dans PID Review, puis comparer sept réglages du même gain pris dans le même vol et en tirer le réglage visé.
+- **la formation 9.4, la chaîne complète et la démarche** : angle, vertical et horizontal, la marge de contrôle des moteurs, le journal d'hypothèses et ce que le prochain vol doit contenir.
 
-Annexes : [fiche-controleurs.md](fiche-controleurs.md) (messages de log et paramètres de chaque contrôleur), [glossaire.md](glossaire.md), [logs/README.md](logs/README.md) (les logs de travail), [solutions/](solutions/) (le journal complet du vol 1).
+Annexes : [fiche-controleurs.md](fiche-controleurs.md) (messages de log et paramètres de chaque contrôleur), [glossaire.md](glossaire.md), [logs/README.md](logs/README.md) (le log de travail), [solutions/](solutions/) (le journal complet du vol du 27 octobre).
 
 Les rosbags (enregistrement et relecture côté ROS 2) ne sont pas traités ici : l'enregistrement est vu en formation 4 (4.2, section 4, `make bag`).

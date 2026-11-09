@@ -1,22 +1,31 @@
-# Les logs de la formation 9
+# Le log de la formation 9
 
-Les fichiers `.bin` ne sont pas dans le dépôt (trop gros pour GitHub, et ignorés par git dans ce dossier). Ils se téléchargent depuis le Drive de l'équipe et se placent ici :
+Le fichier `.bin` n'est pas dans le dépôt (217 Mo, trop gros pour GitHub, et ignoré par git dans ce dossier). Il se télécharge depuis le Drive de l'équipe et se place ici :
 
 <!-- Lien de téléchargement à ajouter -->
 
 | Fichier | Vol | Taille | Usage |
 |---|---|---|---|
-| `crash-proof-vol1-2026-08-08.bin` | Crash Proof, premier vol, 8 août 2026, 16 h 17, 24 min, 13 armements | 140 Mo | **Le log de la formation.** Tout 9.1 à 9.4 le suit. |
-| `crash-proof-vol2-2026-08-11.bin` | Crash Proof, 11 août 2026, 16 h 58, 19 min | 135 Mo | Bonus de 9.4 seulement : vérifier si les corrections du vol 1 ont eu l'effet attendu. Vol très expérimental (Acro, limites d'angle à 80 degrés, glitchs GPS, failsafe batterie en fin de vol) : il ne sert pas de modèle. |
-| `crash-proof-vol2a-2026-08-11-court.bin` | Crash Proof, 11 août 2026, 16 h 55, 2 min | 30 Mo | Un fichier court, pour tester qu'un outil charge. |
+| `vol-tuning-2026-10-27.bin` | Vol de tuning du 27 octobre 2026, 14 h 15, environ 24 min, 13 armements | 217 Mo | **Le log de la formation.** Tout 9.1 à 9.4 le suit. |
 
-## Ce que contient le vol 1
+Si le fichier téléchargé porte son nom d'origine, `2026-10-27 14-15-12.bin`, renommez-le.
 
-- ArduCopter 4.6.3 sur MatekH743, quadricoptère en X, batterie 12S, DShot bidirectionnel (RPM par télémétrie ESC), pas de rangefinder.
-- Stabilize jusqu'à 500 s (cinq sauts courts, coups de stick en roll et yaw vers 375 à 465 s), AltHold à partir de 501 s (deux essais qui finissent au sol à 706 et 770 s, puis des vols réussis après correction de `PSC_ACCZ_P` à 1049 s), Loiter à partir de 1183 s (dont deux minutes de vol calme entre 1218 et 1340 s), coups de stick en pitch vers 1430 s.
-- Paramètres au début du vol : notch à 102 Hz en mode throttle, bandwidth 25, atténuation 15, harmoniques 1 et 3 ; passe-bas gyro à 42 Hz ; `ATC_RAT_RLL_P` et `ATC_RAT_PIT_P` 0,07, D 0,0018 ; `ATC_RAT_YAW_P` 0,18 ; `ATC_ANG_RLL_P` et `ATC_ANG_PIT_P` 4,5 ; `PSC_ACCZ_P` 0,015 puis 0,15 à 1049 s ; `MOT_SPIN_MIN` 0,07 puis 0,09 ; `MOT_THST_HOVER` 0,125.
-- Journalisation : Fast Attitude, PID et IMU Fast actifs ; IMU 0 en batch, sans post-filtre.
+## Ce que contient le vol
 
-## Ce que contient le vol 2
+- ArduCopter 4.6.3 sur MatekH743 (firmware `-bdshot`), quadricoptère, batterie 12S, DShot bidirectionnel (RPM par télémétrie ESC), pas de rangefinder. C'est le Crash Proof, avec les réglages tirés de ses premiers vols d'août.
+- Les temps sont en secondes depuis le démarrage du contrôleur, comme dans les outils.
 
-Paramètres appliqués après la séance du 11 août : `ATC_RAT_YAW_P` 0,24 ; `ATC_ANG_RLL_P` et `ATC_ANG_PIT_P` 4,05 ; `PSC_ACCZ_P` 0,18 ; notch à 111 Hz en mode télémétrie ESC, bandwidth 12, atténuation 6, options multisource, loop rate et toutes les IMU ; passe-bas gyro toujours à 42 Hz. Puis, en vol : `ANGLE_MAX` 80 degrés, `ACRO_RP_RATE` 680, `LOIT_SPEED` 36 m/s, `GPS_HDOP_GOOD` relevé pour pouvoir armer. Le vol se termine sur un failsafe batterie (RTL puis Land).
+| Temps (s) | Mode | Ce qui se passe |
+|---|---|---|
+| 146 à 332 | Stabilize, au sol | Contrôleur allumé, drone désarmé. |
+| 333 à 480 | AltHold | **Premier vol : coups de stick en roll, puis pitch, puis yaw**, avec les réglages de départ. Batterie à 49,3 V. |
+| 494 à 642 | AltHold, puis Loiter | Deux vols courts ; hover calme en Loiter de 573 à 593 s (filtres). |
+| 658 à 717 | Stabilize, Loiter, AltHold | Vol plus libre, jusqu'à 12 m, gaz à fond en Stabilize à 699 s. |
+| 736 à 972 | AltHold | **Le cas d'étude : `ATC_RAT_RLL_P` changé en vol six fois** (0,07, 0,098, 0,13, 0,04, 0,05, 0,03, puis retour à 0,07), avec des coups de roll après chaque changement. |
+| 982 à 1 068 | AltHold | `ATC_ANG_PIT_P` passé de 4,05 à 3,0, coups de pitch, puis retour à 4,05. |
+| 1 084 à 1 358 | Loiter, RTL | `ANGLE_MAX` monté à 60 puis 80 degrés : vol agressif, roulis jusqu'à 62 degrés. RTL commandé à 1 321 s. |
+| 1 445 à 1 549 | Loiter, RTL | Deux vols courts ; failsafe batterie à 1 544 s (41,3 V). |
+
+## Paramètres au début du vol
+
+Notch harmonique en mode télémétrie ESC (3), `INS_HNTCH_FREQ` 111 Hz, bandwidth 12, atténuation 6, harmoniques 1 et 3, options 14 ; passe-bas gyro `INS_GYRO_FILTER` 42 Hz ; rates roll et pitch P 0,07, I 0,07, D 0,0018 ; yaw P 0,24, I 0,018, D 0 ; angles roll et pitch P 4,05 ; `PSC_ACCZ_P` 0,18, `PSC_ACCZ_I` 0,3 ; `MOT_SPIN_MIN` 0,09, `MOT_THST_HOVER` 0,125. Journalisation : Fast Attitude et PID actifs ; première IMU en batch, sans post-filtre (`INS_LOG_BAT_OPT` 0) ; `LOG_FILE_DSRMROT` 0, d'où un seul fichier pour 13 armements.
