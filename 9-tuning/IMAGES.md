@@ -22,13 +22,14 @@ Pour refaire une image : charger le log dans l'outil, régler la plage de temps 
 | Fichier | Outil | Contenu |
 |---|---|---|
 | `9.2-01-selection-loiter-calme.png` | Filter Review | Vue d'ensemble du vol |
-| `9.2-02-spectre-pre-filtre.png` | Filter Review | Spectre pré-filtre, 573 à 593 s |
+| `9.2-02-spectre-pre-filtre.png` | Filter Review | Spectre pré-filtre, 350 à 395 s (hover en AltHold) |
 | `9.2-03-post-filtre-parametres-du-vol.png` | Filter Review | Pré-filtre et post-filtre estimé, paramètres du vol (passe-bas 42 Hz) |
 | `9.2-05-passe-bas-400.png` | Filter Review | Passe-bas à 400 Hz, notch d'origine (111 Hz) affiché |
-| `9.2-06-reglage-propose.png` | Filter Review | Notch à 107 Hz, passe-bas 400 Hz |
+| `9.2-06-reglage-propose.png` | Filter Review | Plancher du notch à 100 Hz, passe-bas 400 Hz |
 | `9.2-07-spectrogramme.png` | Filter Review | Spectrogramme, notch fondamental plat à 111 Hz, harmonique 3 qui suit le RPM |
 | `9.2-08-phase-avant.png` | Filter Review | Amplitude et phase des filtres du vol |
 | `9.2-09-phase-apres.png` | Filter Review | Amplitude et phase du réglage proposé |
+| `9.2-10-spectrogramme-propose.png` | Filter Review | Spectrogramme avec le réglage proposé : le notch suit chaque moteur |
 
 ## 9.3 les rates
 

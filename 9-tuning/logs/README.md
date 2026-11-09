@@ -18,8 +18,8 @@ Si le fichier téléchargé porte son nom d'origine, `2026-10-27 14-15-12.bin`, 
 | Temps (s) | Mode | Ce qui se passe |
 |---|---|---|
 | 146 à 332 | Stabilize, au sol | Contrôleur allumé, drone désarmé. |
-| 333 à 480 | AltHold | **Premier vol : coups de stick en roll, puis pitch, puis yaw**, avec les réglages de départ. Batterie à 49,3 V. |
-| 494 à 642 | AltHold, puis Loiter | Deux vols courts ; hover calme en Loiter de 573 à 593 s (filtres). |
+| 333 à 480 | AltHold | **Premier vol : hover calme de 350 à 395 s (filtres), puis coups de stick en roll, pitch, yaw** (395 à 470 s), avec les réglages de départ. Batterie à 49,3 V. |
+| 494 à 642 | AltHold, puis Loiter | Deux vols courts. |
 | 658 à 717 | Stabilize, Loiter, AltHold | Vol plus libre, jusqu'à 12 m, gaz à fond en Stabilize à 699 s. |
 | 736 à 972 | AltHold | **Le cas d'étude : `ATC_RAT_RLL_P` changé en vol six fois** (0,07, 0,098, 0,13, 0,04, 0,05, 0,03, puis retour à 0,07), avec des coups de roll après chaque changement. |
 | 982 à 1 068 | AltHold | `ATC_ANG_PIT_P` passé de 4,05 à 3,0, coups de pitch, puis retour à 4,05. |

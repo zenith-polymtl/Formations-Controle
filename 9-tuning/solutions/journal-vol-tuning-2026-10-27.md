@@ -6,7 +6,7 @@
 
 - ArduCopter 4.6.3, MatekH743-bdshot, quadricoptère, batterie 12S (49,5 V au premier armement), DShot bidirectionnel, pas de rangefinder.
 - Environ 24 minutes, 13 armements, un seul fichier (`LOG_FILE_DSRMROT` à 0).
-- Phases : coups de stick roll, pitch, yaw en AltHold (333 à 480 s) ; hover calme en Loiter (573 à 593 s) ; vol libre (658 à 717 s) ; sept réglages de `ATC_RAT_RLL_P` en AltHold (736 à 972 s) ; `ATC_ANG_PIT_P` à 3,0 (982 à 1 068 s) ; vol agressif en Loiter (1 084 à 1 358 s) ; deux vols courts et failsafe batterie (1 445 à 1 549 s).
+- Phases : coups de stick roll, pitch, yaw en AltHold (333 à 480 s) ; hover calme en AltHold (350 à 395 s) ; vol libre (658 à 717 s) ; sept réglages de `ATC_RAT_RLL_P` en AltHold (736 à 972 s) ; `ATC_ANG_PIT_P` à 3,0 (982 à 1 068 s) ; vol agressif en Loiter (1 084 à 1 358 s) ; deux vols courts et failsafe batterie (1 445 à 1 549 s).
 - Paramètres changés en vol : `ATC_RAT_RLL_P` (six fois), `ATC_ANG_PIT_P` (deux fois), `ANGLE_MAX` 30 → 60 → 80 degrés, `LAND_ALT_LOW`, `LAND_SPEED_HIGH`, `RTL_ALT` 20 → 10 m.
 
 ## 2 - Fiche de santé
@@ -22,7 +22,7 @@
 | Paramètres changés en vol | voir section 1 | |
 | VIBE (IMU 0) | moyennes X 1,2, Y 1,0, Z 1,5 m/s² ; max 14 m/s² à 1 247 s | sain |
 | Clip | 0 | sain |
-| RPM en hover | 6 260 à 6 500 tr/min, soit 104 à 108 Hz | cohérent avec le pic du spectre |
+| RPM en hover | médianes 106 à 108 Hz, creux vers 93 Hz | cohérent avec le pic du spectre |
 | Pôles | 14 | cohérent |
 | Température ESC | 34 °C max | sain |
 | Batterie | 49,5 V au départ, 41,5 V à la fin ; failsafe batterie à 1 544 s (41,3 V) | sain ; vol mené jusqu'au seuil |
@@ -35,16 +35,16 @@
 
 **Verdict : sain, données fiables pour le tuning.** Deux corrections hors tuning (seuil d'armement, moniteur de courant), deux réglages de journalisation à corriger.
 
-## 3 - Filtres (Filter Review, 573 à 593 s)
+## 3 - Filtres (Filter Review, 350 à 395 s)
 
 | Paramètre | Pendant le vol | Hypothèse |
 |---|---|---|
 | `INS_GYRO_FILTER` | 42 Hz | 400 Hz, à surveiller |
-| `INS_HNTCH_FREQ` | 111 Hz | 107 Hz (le plancher doit être sous le hover) |
+| `INS_HNTCH_FREQ` | 111 Hz | 100 Hz (le plancher doit être sous le hover le plus lent) |
 | `INS_HNTCH_MODE`, `_OPTS`, `_BW`, `_ATT`, `_HMNCS` | 3, 14, 12, 6, 5 | inchangés |
 | `INS_LOG_BAT_OPT` | 0 | bit post-filtre |
 
-Observation : pics pré-filtre à 107 Hz (moins 36 dB), 310 à 320 Hz (moins 41) et 640 Hz (moins 45). Avec les paramètres du vol, tout est écrasé sous moins 60 dB par le passe-bas à 42 Hz (phase environ moins 115 degrés à 50 Hz). Passe-bas à 400 Hz : le pic moteur remonte à moins 46 dB, parce que le notch reste bloqué à son plancher de 111 Hz (spectrogramme). Notch à 107 Hz : moins 54 et moins 53 dB, phase environ moins 18 degrés à 50 Hz.
+Observation : pics pré-filtre à 105 Hz (moins 39 dB) et 310 Hz (moins 41) ; 620 Hz déjà à moins 52. Avec les paramètres du vol, tout est écrasé par le passe-bas à 42 Hz (moins 62 dB sur le pic moteur ; phase environ moins 115 degrés à 50 Hz). Passe-bas à 400 Hz : le pic moteur remonte à moins 46 dB, parce que le notch reste bloqué à son plancher de 111 Hz (spectrogramme). Plancher à 107 Hz : moins 51,5 dB ; à 104 ou 100 Hz, le pic disparaît (moins 53 dB au plus autour) et le notch suit chaque moteur ; phase environ moins 20 degrés à 50 Hz.
 
 ## 4 - Rates (PID Review)
 
