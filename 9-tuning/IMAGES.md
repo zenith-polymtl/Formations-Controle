@@ -15,7 +15,7 @@ Pour refaire une image : charger le log dans l'outil, régler la plage de temps 
 | `9.1-05-hardware-report-voltage.png` | Hardware Report | Voltage du contrôleur (non référencée dans le texte) |
 | `9.1-06-hardware-report-messages-perdus.png` | Hardware Report | Messages perdus (non référencée dans le texte) |
 | `9.1-07-vibe-clip.png` | UAV Log Viewer | `VIBE[0].VibeX/Y/Z`, `VIBE[0].Clip`, `CTUN.Alt` |
-| `9.1-08-esc-rpm-rcou.png` | UAV Log Viewer | `ESC[0].RPM` et `RCOU.C1`, 575 à 635 s |
+| `9.1-08-esc-rpm-rcou.png` | UAV Log Viewer | `ESC[0].RPM` et `RCOU.C1`, 395 à 470 s |
 
 ## 9.2 vibrations et filtres
 
