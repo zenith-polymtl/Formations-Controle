@@ -21,7 +21,7 @@ Pour refaire une image : charger le log dans l'outil, régler la plage de temps 
 
 | Fichier | Outil | Contenu |
 |---|---|---|
-| `9.2-01-selection-loiter-calme.png` | Filter Review | Vue d'ensemble du vol |
+| `9.2-01-vue-ensemble.png` | Filter Review | Vue d'ensemble du vol |
 | `9.2-02-spectre-pre-filtre.png` | Filter Review | Spectre pré-filtre, 350 à 395 s (hover en AltHold) |
 | `9.2-03-post-filtre-parametres-du-vol.png` | Filter Review | Pré-filtre et post-filtre estimé, paramètres du vol (passe-bas 42 Hz) |
 | `9.2-05-passe-bas-400.png` | Filter Review | Passe-bas à 400 Hz, notch d'origine (111 Hz) affiché |

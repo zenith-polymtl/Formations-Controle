@@ -28,12 +28,12 @@
 | Batterie | 49,5 V au départ, 41,5 V à la fin ; failsafe batterie à 1 544 s (41,3 V) | sain ; vol mené jusqu'au seuil |
 | `BATT_ARM_VOLT` moins `BATT_LOW_VOLT` | 40,0 moins 42,0 = **négatif** | **problème** : viser environ 43 V |
 | Courant batterie | 0,1 A constant | **problème** hors tuning : configurer `BATT_MONITOR` ; `ESC.Curr` dépanne |
-| Journalisation | pas de post-filtre (`INS_LOG_BAT_OPT` 0), un seul fichier | à corriger |
+| Journalisation | pas de post-filtre (`INS_LOG_BAT_OPT` 0) | à corriger |
 | Hover appris | 0,125 (plancher) | à retenir pour les marges |
 | GPS | 11 à 16 satellites, pas de glitch | sain |
 | Messages | alignements du yaw au décollage ; failsafes batterie et radio à la fin | sain |
 
-**Verdict : sain, données fiables pour le tuning.** Deux corrections hors tuning (seuil d'armement, moniteur de courant), deux réglages de journalisation à corriger.
+**Verdict : sain, données fiables pour le tuning.** Deux corrections hors tuning (seuil d'armement, moniteur de courant), le bit post-filtre à activer.
 
 ## 3 - Filtres (Filter Review, 350 à 395 s)
 
@@ -92,7 +92,7 @@ Pendant les coups de stick : roll 1 229 à 1 349, pitch 1 179 à 1 357, yaw **1 
 ## 9 - Ce que le prochain vol doit contenir
 
 1. Les paramètres ci-dessus chargés, vérifiés par deux comparaisons.
-2. `INS_LOG_BAT_OPT` avec le bit post-filtre, `LOG_FILE_DSRMROT` à 1, `BATT_ARM_VOLT` à environ 43 V.
+2. `INS_LOG_BAT_OPT` avec le bit post-filtre, `BATT_ARM_VOLT` à environ 43 V.
 3. 30 à 40 s de hover calme à 5 m ou plus, en début de vol.
 4. Coups de stick roll, pitch, yaw en AltHold, batteries pleines.
 5. Montées et descentes franches en AltHold ; déplacements francs et arrêts nets en Loiter.
