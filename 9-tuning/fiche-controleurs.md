@@ -29,7 +29,7 @@ Convention des champs : dans les messages `PSC*`, **D** en tête veut dire « de
 | Feed-forward | `ATC_RAT_RLL_FF` | `ATC_RAT_PIT_FF` | `ATC_RAT_YAW_FF` |
 | Passe-bas internes | `ATC_RAT_RLL_FLTT` (consigne), `_FLTD` (dérivée), `_FLTE` (erreur) | idem `PIT` | idem `YAW` |
 | Limites | `ATC_RAT_RLL_IMAX`, `_SMAX` | idem | idem |
-| Crash Proof, 8 août | P 0,07, I 0,07, D 0,0018, FLTT et FLTD 21 Hz | idem | P 0,18 → 0,24, I 0,018, D 0 |
+| Crash Proof, 27 oct. | P 0,07 (essais en vol de 0,03 à 0,13), I 0,07, D 0,0018, FLTT et FLTD 21 Hz | P 0,07, I 0,07, D 0,0018 | P 0,24, I 0,018, D 0 |
 | Outil | PID Review (seul outil avec step response) | | |
 
 Les champs `P`, `I`, `D`, `FF` des messages `PID*` donnent la contribution de chaque terme à la sortie : utile pour voir si c'est le D qui fait du bruit.
@@ -40,7 +40,7 @@ Les champs `P`, `I`, `D`, `FF` des messages `PID*` donnent la contribution de ch
 |---|---|---|---|
 | Message et champs | `ATT.DesRoll` contre `ATT.Roll` | `ATT.DesPitch` contre `ATT.Pitch` | `ATT.DesYaw` contre `ATT.Yaw` |
 | P (seul) | `ATC_ANG_RLL_P` | `ATC_ANG_PIT_P` | `ATC_ANG_YAW_P` |
-| Crash Proof, 8 août | 4,5 → 4,05 | 4,5 → 4,05 | inchangé |
+| Crash Proof, 27 oct. | 4,05 | 4,05 (essai en vol à 3,0) | 4,5 |
 | Outil | UAV Log Viewer (mettre à l'échelle à la main) | | |
 
 Paramètres d'agressivité liés à l'attitude : `ATC_ACCEL_R_MAX`, `ATC_ACCEL_P_MAX`, `ATC_ACCEL_Y_MAX` (accélérations angulaires max), `ATC_RATE_R_MAX`, `_P_MAX`, `_Y_MAX` (rates max, 0 = illimité), `ATC_INPUT_TC` (lissage du stick, 0,15 s par défaut), `ATC_SLEW_YAW`, `ANGLE_MAX` (inclinaison max, 30 degrés par défaut), et en Acro `ACRO_RP_RATE`, `ACRO_Y_RATE`.
@@ -51,7 +51,7 @@ Paramètres d'agressivité liés à l'attitude : `ATC_ACCEL_R_MAX`, `ATC_ACCEL_P
 |---|---|---|---|
 | Position Z | `CTUN.DAlt` contre `CTUN.Alt` ; aussi `PSCD.TPD` contre `PSCD.PD` | `PSC_POSZ_P` (P seul) | Se règle en dernier de la chaîne verticale. |
 | Vitesse Z | `CTUN.DCRt` contre `CTUN.CRt` ; aussi `PSCD.TVD` contre `PSCD.VD` | `PSC_VELZ_P`, `_I`, `_D`, `_FF`, `_FLTE`, `_FLTD`, `_IMAX` | À lire en AltHold. |
-| Accélération Z | `PIDA.Tar` contre `PIDA.Act` ; aussi `PSCD.TAD` contre `PSCD.AD` | `PSC_ACCZ_P`, `_I`, `_D` (0), `_FF`, `_FLTT`, `_FLTD`, `_FLTE`, `_IMAX` | Commande directement le throttle. Crash Proof : P 0,015 → 0,15 (en vol, 8 août) → 0,18 (11 août) ; I 0,03 → 0,3. |
+| Accélération Z | `PIDA.Tar` contre `PIDA.Act` ; aussi `PSCD.TAD` contre `PSCD.AD` | `PSC_ACCZ_P`, `_I`, `_D` (0), `_FF`, `_FLTT`, `_FLTD`, `_FLTE`, `_IMAX` | Commande directement le throttle. Crash Proof, 27 oct. : P 0,18, I 0,3. |
 
 Autres champs utiles de `CTUN` : `ThI` (throttle demandé par le pilote), `ThO` (throttle envoyé), `ThH` (throttle de hover appris), `BAlt` (altitude baro), `SAlt` (rangefinder), `TAlt` (altitude terrain).
 
