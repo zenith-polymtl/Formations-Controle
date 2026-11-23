@@ -27,6 +27,8 @@ Le parcours de formation de l'équipe contrôle de Zenith : du premier drone sim
 |---|---|---|
 | [Isaac Sim Vision Lab](https://github.com/HaiPy04/isaac-sim-synthetic-vision-lab) | Génération de données synthétiques (SDG) avec Replicator, OpenUSD, shaders thermiques (`primvars`) et randomisation de domaine | 2 h |
 | [Pegasus & Isaac Sim](https://github.com/HaiPy04/isaac-sim-px4-imitation-capture) | Simulation physique UAV, intégration PX4 SITL / ROS 2 / QGroundControl et capture de télémétrie pour l'apprentissage par imitation | 2 h 30 |
+
+
 La formation 9 est une branche parallèle : elle se fait après la formation 1 et ne demande ni Docker ni ROS 2. Elle suit un seul log réel, le vol de tuning du 27 octobre 2026.
 
 Commencer par [Formation 0](0-prerequis/0-prerequis-et-poste-de-travail.md), qui explique le parcours, où demander de l'aide et quoi poster à la fin de chaque module.
