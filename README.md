@@ -18,6 +18,8 @@ Le parcours de formation de l'équipe contrôle de Zenith : du premier drone sim
 | [Formation 4.3](4-env_compétition/4.3-projet-ajouter-un-node.md) | Projet : ajouter une node à la démo, `make check`, branche et PR | 2 h |
 | [Annexe 4.4](4-env_compétition/4.4-annexe-leads-creer-un-environnement.md) | Créer et faire évoluer un repo de mission : leads | 20 min |
 | [Formation 4.5](4-env_compétition/4.5-pour-plus-tard.md) | Pour plus tard : l'annexe des leads, `procédure.md`, la formation 6, la vision. Lecture | 10 min |
+| [Formation 5.1](5-simulation/5.1-simulation-sitl-ardupilot.md) | Simulation SITL ArduPilot : le code du clavier de la 3.4 dans mission-template, contre le SITL de Mission Planner | 45 min |
+| [Formation 5.2](5-simulation/5.2-gazebo.md) | Gazebo avec Keen-Kestrel : le terrain de Medicine Hat, l'Hexa et l'ODOS, puis le même code avec `SITL=gazebo` | 1 h 15 |
 | [Formation 9.1](9-tuning/9.1-lire-un-log.md) | Tuning : le vol de tuning type, lire un log, les outils, la fiche de santé | 1 h |
 | [Formation 9.2](9-tuning/9.2-vibrations-et-filtres.md) | Tuning : vibrations, notch harmonique et passe-bas dans Filter Review | 1 h |
 | [Formation 9.3](9-tuning/9.3-les-rates.md) | Tuning : les rates dans PID Review, plusieurs réglages comparés, le yaw | 1 h 15 |

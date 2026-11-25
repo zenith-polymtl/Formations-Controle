@@ -505,11 +505,15 @@ const FORMATIONS = [
     termes: ["repo", "submodule", "make", "rosbag", "pr"], avant: ["3.2"],
     avantTxt: "3.2 (raccourci) ; idéalement toute la 3",
     note: "Raccourci : la 3.2 suffit pour commencer ici." },
-  { id: "5", titre: "Simulation avancée", etat: "avenir",
+  { id: "5", titre: "Simulation avancée", etat: "publiee", duree: "2 h",
     apprend: "Tester une mission dans un monde 3D, avec Gazebo et mavros.",
+    sous: [
+      { id: "5.1", t: "Simulation SITL ArduPilot", url: DEPOT + "5-simulation/5.1-simulation-sitl-ardupilot.md", avant: ["4.1", "3.4"] },
+      { id: "5.2", t: "Gazebo avec Keen-Kestrel", url: DEPOT + "5-simulation/5.2-gazebo.md", avant: ["5.1"] }
+    ],
     termes: ["sitl", "gazebo", "mavros"], avant: ["4", "3.4"],
     avantTxt: "4, et toute la 3 (mavros)",
-    note: "Bâtie sur un dépôt privé de l'équipe, ouvert une fois les formations 0 à 4 faites." },
+    note: "La 5.2 utilise Keen-Kestrel, un dépôt privé de l'équipe : demande l'accès à un lead." },
   { id: "6", titre: "Réseau et compétition", etat: "avenir",
     apprend: "Faire passer les messages du drone au sol avec Zenoh, et lancer les programmes au démarrage.",
     termes: ["zenoh", "ip", "ssh"], avant: ["4"],

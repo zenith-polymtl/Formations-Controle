@@ -37,7 +37,7 @@ KEYS = 'wasdqerf'
 
 HELP = """
 ---------------------------------------------
- Téléop clavier la formation 3
+ Téléop clavier de la formation 3
 ---------------------------------------------
  Touches : w a s d q e r f
  Maintenir une touche pour la garder active.
